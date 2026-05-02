@@ -51,3 +51,7 @@ post_data = {
 
 res = requests.post(send_url, headers=headers, data=post_data)
 print("전송 결과:", res.status_code)
+
+res = requests.post(send_url, headers=headers, data=post_data)
+print(f"상태 코드: {res.status_code}")
+print(f"응답 내용: {res.json()}")
