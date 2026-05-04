@@ -39,7 +39,7 @@ def save_qt_to_md():
     for v in verses:
         num = v.select_one('.num').text.strip()
         info = v.select_one('.info').text.strip()
-        md_content += f"- **{num}** {info}\n"
+        md_content += f"{num}절 {info}\n"
     
     # [해설 및 기도]
     md_content += "\n---\n\n### 💡 본문 해설 및 묵상\n"
