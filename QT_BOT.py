@@ -42,18 +42,23 @@ def save_qt_to_md():
         md_content += f"- **{num}** {info}\n"
     
     # [해설 및 기도]
-    md_content += "\n---\n\n### 💡 본문 해설\n"
+    md_content += "\n---\n\n### 💡 본문 해설 및 묵상\n"
     exp_box = soup.select_one('#body_cont_3')
     
     if exp_box:
-        # 1. 전체 텍스트 가져오기 (줄바꿈 유지)
+        # 1. 텍스트 추출
         raw_text = exp_box.get_text("\n", strip=True)
         
-        # 2. '절' 구분 강조 (예: 1-3절 -> \n\n#### 📍 1-3절)
-        # 숫자로 시작해서 '절'로 끝나는 패턴을 찾아 마크다운 소제목으로 변환합니다.
-        processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'\n\n#### 📍 \1\n', raw_text)
+        # 2. 핵심 질문 강조 (하나님은 어떤 분 / 내게 주시는 교훈)
+        # 질문 앞에 줄바꿈과 이모지, 인용구(>)를 넣어 눈에 확 띄게 만듭니다.
+        processed_text = raw_text.replace("하나님은 어떤 분입니까?", "\n\n## ✨ 하나님은 어떤 분입니까?\n")
+        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", "\n\n## 📝 내게 주시는 교훈은 무엇입니까?\n")
         
-        # 3. '기도' 부분 별도 강조 (f-string 외부 처리로 역슬래시 에러 방지)
+        # 3. 절 구분 강조 (1절, 2-5절 등)
+        # 이미 질문 섹션이 나뉘었으므로, 그 안의 절들을 소제목으로 바꿉니다.
+        processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'\n\n#### 📍 \1', processed_text)
+        
+        # 4. 기도 섹션 마무리
         processed_text = processed_text.replace("기도", "\n\n---\n### 🙏 오늘의 기도\n")
         
         md_content += processed_text
