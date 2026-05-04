@@ -81,7 +81,7 @@ def send_kakao(token, title, file_path):
     user_id = "qazwsx5381"
     repo_name = "QT_BOT"
     
-    github_link = f"https://{user_id}.github.io/{repo_name}/{filename}"
+    github_link = f"https://{user_id}.github.io/{repo_name}/data/today_qt.md"
     homepage_link = "https://sum.su.or.kr:8888/bible/today"
 
     url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
