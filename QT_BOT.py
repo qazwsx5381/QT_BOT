@@ -49,23 +49,47 @@ def save_qt_to_file():
 
 # --- 3. 카톡 전송 (GitHub 링크 포함) ---
 def send_kakao(token, title, file_path):
-    # GitHub 저장소의 파일 직접 보기 주소 구성 (본인 계정/레포명 확인 필수)
-    # 예: https://github.com/사용자아이디/레포명/blob/main/data/QT_2026-05-04.txt
-    user_id = "qazwsx5381@gmail.com"
+    # 1. GitHub 파일 링크 (본인 정보로 수정 필수)
+    user_id = "qazwsx5381"
     repo_name = "QT_BOT"
     github_link = f"https://github.com/{user_id}/{repo_name}/blob/main/{file_path}"
+    
+    # 2. 홈페이지 주소
+    homepage_link = "https://sum.su.or.kr:8888/bible/today"
 
     url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
     headers = {"Authorization": f"Bearer {token}"}
+    
+    # 버튼(buttons) 리스트를 2개로 구성합니다.
     post_data = {
         "template_object": json.dumps({
             "object_type": "text",
-            "text": f"📢 오늘의 QT: {title}\n\n전체 해설은 GitHub 파일에서 확인하세요!",
-            "link": {"web_url": github_link, "mobile_web_url": github_link},
-            "button_title": "텍스트 파일로 보기"
+            "text": f"📖 오늘의 QT: {title}\n\n전체 내용은 아래 '텍스트 파일' 혹은 '홈페이지 연결' 버튼을 눌러 확인하세요!",
+            "link": {
+                "web_url": homepage_link,
+                "mobile_web_url": homepage_link
+            },
+            "buttons": [
+                {
+                    "title": "📄 텍스트 파일로 보기",
+                    "link": {
+                        "web_url": github_link,
+                        "mobile_web_url": github_link
+                    }
+                },
+                {
+                    "title": "🌐 홈페이지 연결",
+                    "link": {
+                        "web_url": homepage_link,
+                        "mobile_web_url": homepage_link
+                    }
+                }
+            ]
         })
     }
-    requests.post(url, headers=headers, data=post_data)
+    
+    res = requests.post(url, headers=headers, data=post_data)
+    print(f"전송 결과: {res.status_code}")
 
 # 실행
 token = get_access_token()
