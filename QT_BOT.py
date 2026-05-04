@@ -50,11 +50,13 @@ def get_qt_data():
                 is_prayer = True
                 continue
             if is_prayer:
-                prayer_text += f"· {text.replace('열방-', '\n열방-')}\n"
+                # \n이 포함된 변경 사항을 f-string 밖에서 미리 처리합니다.
+                processed_prayer = text.replace('열방-', '\n열방-')
+                prayer_text += f"· {processed_prayer}\n"
             else:
-                # 해설 내 절 구분 강조
-                processed = re.sub(r'(\d+-\d+절|\d+절)', r'\n📌 \1\n', text)
-                exp_text += f"{processed}\n"
+                # 여기도 마찬가지로 안전하게 처리
+                processed_exp = re.sub(r'(\d+-\d+절|\d+절)', r'\n📌 \1\n', text)
+                exp_text += f"{processed_exp}\n"
 
     return bible_text, exp_text + prayer_text
 
