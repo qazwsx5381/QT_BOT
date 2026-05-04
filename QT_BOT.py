@@ -43,11 +43,18 @@ def save_qt_to_md():
     # [해설 및 기도]
     md_content += "\n---\n\n### 💡 본문 해설\n"
     exp_box = soup.select_one('#body_cont_3')
+    
     if exp_box:
-        # 역슬래시 에러 방지를 위해 미리 텍스트 가공
+        # 1. 전체 텍스트 가져오기 (줄바꿈 유지)
         raw_text = exp_box.get_text("\n", strip=True)
-        # 기도 제목 앞에 엔터 추가 (f-string 외부에서 처리)
-        processed_text = raw_text.replace("기도", "\n#### 🙏 오늘의 기도\n")
+        
+        # 2. '절' 구분 강조 (예: 1-3절 -> \n\n#### 📍 1-3절)
+        # 숫자로 시작해서 '절'로 끝나는 패턴을 찾아 마크다운 소제목으로 변환합니다.
+        processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'\n\n#### 📍 \1\n', raw_text)
+        
+        # 3. '기도' 부분 별도 강조 (f-string 외부 처리로 역슬래시 에러 방지)
+        processed_text = processed_text.replace("기도", "\n\n---\n### 🙏 오늘의 기도\n")
+        
         md_content += processed_text
 
     # 폴더 생성 및 저장 (today_qt.md로 고정하여 덮어쓰기)
