@@ -23,18 +23,17 @@ def save_qt_to_html():
     res = requests.get('https://sum.su.or.kr:8888/bible/today', headers=headers)
     soup = BeautifulSoup(res.text, 'html.parser')
 
-    # 기본 정보 추출
     main_title = soup.select_one('#bible_text').text.strip()
     full_title = soup.select_one('#bibleinfo_box_3').text.strip()
     date_str = datetime.now().strftime("%Y-%m-%d")
     
-    # [성경 본문 추출]
+    # [성경 본문 추출] - 각 절을 <div>로 감싸 한 줄씩 구분
     bible_text = ""
     verses = soup.select('#body_list > li')
     for v in verses:
         num = v.select_one('.num').text.strip()
         info = v.select_one('.info').text.strip()
-        bible_text += f"<b>{num}절</b> {info}<br>"
+        bible_text += f'<div style="margin-bottom: 8px;"><b style="color: #0969da;">{num}</b> {info}</div>'
     
     # [해설 및 기도 가공]
     exp_box = soup.select_one('#body_cont_3')
@@ -42,22 +41,22 @@ def save_qt_to_html():
     if exp_box:
         raw_text = exp_box.get_text("\n", strip=True)
         
-        # 핵심 질문 강조
-        processed_text = raw_text.replace("하나님은 어떤 분입니까?", "<h3>✨ 하나님은 어떤 분입니까?</h3>")
-        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", "<h3>📝 내게 주시는 교훈은 무엇입니까?</h3>")
+        # 핵심 질문 강조 (글자 크기 키움)
+        processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>')
+        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2>')
         
-        # 절 구분 강조 (1절, 2-5절 등)
-        processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'<br><br><b>📍 \1</b><br>', processed_text)
+        # 절 구분 강조 (📍 아이콘)
+        processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'<div class="verse-point">📍 \1</div>', processed_text)
         
-        # 기도 섹션 및 세부 제목
-        processed_text = processed_text.replace("기도", "<br><hr><h3>🙏 오늘의 기도</h3>")
-        processed_text = processed_text.replace("공동체-", "<br><b>🔹 공동체</b><br>")
-        processed_text = processed_text.replace("열방-", "<br><b>🔹 열방</b><br>")
+        # 기도 섹션
+        processed_text = processed_text.replace("기도", '<br><hr><h2 class="q-title">🙏 오늘의 기도</h2>')
+        processed_text = processed_text.replace("공동체-", '<div class="pray-item"><b>🔹 공동체</b></div>')
+        processed_text = processed_text.replace("열방-", '<div class="pray-item"><b>🔹 열방</b></div>')
         
-        # 일반 줄바꿈 처리
+        # 일반 줄바꿈
         processed_text = processed_text.replace("\n", "<br>")
 
-    # --- HTML 스타일 및 구조 정의 (다크모드 대응) ---
+    # --- HTML 스타일 및 구조 정의 ---
     html_template = f"""
     <!DOCTYPE html>
     <html lang="ko">
@@ -75,27 +74,53 @@ def save_qt_to_html():
                 font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
                 background-color: #ffffff;
                 color: #1f2328;
+                font-size: 1.05rem;
             }}
-            h1 {{ font-size: 1.5rem; border-bottom: 2px solid #eaecef; padding-bottom: 10px; }}
-            h3 {{ color: #0969da; margin-top: 30px; margin-bottom: 10px; }}
+            h1 {{ font-size: 1.6rem; border-bottom: 2px solid #eaecef; padding-bottom: 10px; margin-bottom: 20px; }}
+            
+            /* 질문 제목 강조 */
+            .q-title {{ 
+                font-size: 1.4rem; 
+                color: #d11010; 
+                margin-top: 40px; 
+                margin-bottom: 15px;
+                border-left: 5px solid #d11010;
+                padding-left: 10px;
+            }}
+            
+            /* 절 구분 강조 */
+            .verse-point {{
+                font-weight: bold;
+                color: #cf222e;
+                margin-top: 25px;
+                margin-bottom: 5px;
+                font-size: 1.1rem;
+            }}
+            
+            .pray-item {{ margin-top: 15px; font-size: 1.1rem; color: #0969da; }}
+            
             blockquote {{
                 background: #f6f8fa;
                 border-left: 5px solid #d0d7de;
                 margin: 20px 0;
-                padding: 10px 20px;
+                padding: 15px 20px;
                 color: #57606a;
+                font-size: 0.95rem;
             }}
-            hr {{ border: 0; border-top: 1px solid #d0d7de; margin: 30px 0; }}
-            b {{ color: #cf222e; }}
+            
+            .content-area {{ font-size: 1.15rem; word-break: keep-all; }} /* 해설 본문 글자 크기 업그레이드 */
+            
+            hr {{ border: 0; border-top: 1px solid #d0d7de; margin: 40px 0; }}
 
-            /* 다크모드 전용 스타일 */
+            /* 다크모드 대응 */
             @media (prefers-color-scheme: dark) {{
                 body {{ background-color: #0d1117; color: #c9d1d9; }}
                 h1 {{ border-bottom-color: #30363d; }}
-                h3 {{ color: #58a6ff; }}
+                .q-title {{ color: #ff7b72; border-left-color: #ff7b72; }}
                 blockquote {{ background: #161b22; border-left-color: #30363d; color: #8b949e; }}
+                .verse-point {{ color: #ffa657; }}
+                .pray-item {{ color: #58a6ff; }}
                 hr {{ border-top-color: #30363d; }}
-                b {{ color: #ffa657; }}
             }}
         </style>
     </head>
@@ -106,13 +131,17 @@ def save_qt_to_html():
             <strong>본문:</strong> {full_title}
         </blockquote>
         
-        <h3>📜 성경 본문</h3>
-        <div>{bible_text}</div>
+        <h3 style="color: #666;">📜 성경 본문</h3>
+        <div style="background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee; color: #333;">
+            {bible_text}
+        </div>
         
         <hr>
-        {processed_text}
+        <div class="content-area">
+            {processed_text}
+        </div>
         
-        <footer style="margin-top: 50px; font-size: 0.8rem; color: gray; text-align: center;">
+        <footer style="margin-top: 50px; font-size: 0.8rem; color: gray; text-align: center; padding-bottom: 30px;">
             본 내용은 매일 성경 크롤링을 통해 제공됩니다.
         </footer>
     </body>
@@ -126,14 +155,11 @@ def save_qt_to_html():
     
     return main_title, filename
 
-# --- 3. 카카오톡 전송 ---
+# --- 3. 카카오톡 전송 (함수는 동일하게 유지) ---
 def send_kakao(token, title, file_path):
     user_id = "qazwsx5381"
     repo_name = "QT_BOT"
-    
-    # 캐시 방지를 위해 타임스탬프 추가
-    timestamp = int(time.time())
-    github_link = f"https://{user_id}.github.io/{repo_name}/{file_path}?v={timestamp}"
+    github_link = f"https://{user_id}.github.io/{repo_name}/{file_path}"
     homepage_link = "https://sum.su.or.kr:8888/bible/today"
 
     url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
@@ -158,7 +184,6 @@ def send_kakao(token, title, file_path):
     }
     requests.post(url, headers=headers, data=post_data)
 
-# --- 메인 실행 ---
 if __name__ == "__main__":
     try:
         access_token = get_access_token()
