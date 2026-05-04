@@ -12,8 +12,9 @@ def get_access_token():
         "client_id": os.environ.get("KAKAO_CLIENT_ID"),
         "refresh_token": os.environ.get("KAKAO_REFRESH_TOKEN")
     }
-    response = requests.post(url, data=data).json()
-    return response.get("access_token")
+    response = requests.post(url, data=data)
+    print("토큰 갱신 응답:", response.json()) # 이 로그를 확인하면 에러 이유가 정확히 나옵니다.
+    return response.json().get("access_token")
 
 # --- 2. 크롤링 및 데이터 가공 ---
 def get_qt_data():
