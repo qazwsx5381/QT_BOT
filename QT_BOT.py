@@ -29,8 +29,8 @@ def save_qt_to_md():
     # 마크다운 내용 구성 (가독성 업그레이드)
     date_str = datetime.now().strftime("%Y-%m-%d")
     md_content = f"# 📖 오늘의 QT: {main_title}\n\n"
-    md_content += f"> **날짜:** {date_str}  \n"
-    md_content += f"> **본문 범위:** {full_title}\n\n"
+    md_content += f"> 날짜: {date_str}  \n"
+    md_content += f"> {full_title}\n\n"
     md_content += "---\n\n"
     
     # [성경 본문]
