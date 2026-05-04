@@ -66,7 +66,7 @@ def save_qt_to_html():
         processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'<div class="verse-point">📍 \1</div>', processed_text)
         
         # 기도 섹션
-        processed_text = processed_text.replace("기도", '<br><hr><h2 class="q-title">🙏 오늘의 기도</h2>')
+        processed_text = processed_text.replace("기도", '<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>')
         processed_text = processed_text.replace("공동체-", '<div class="pray-item"><b>🔹 공동체</b></div>')
         processed_text = processed_text.replace("열방-", '<div class="pray-item"><b>🔹 열방</b></div>')
         
