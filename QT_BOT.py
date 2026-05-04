@@ -40,16 +40,16 @@ def save_qt_to_html():
         verses = soup.select('.bible_verse')
 
     for v in verses:
-        # 절 번호(num)와 본문(info)을 각각 추출
         num_tag = v.select_one('.num')
         info_tag = v.select_one('.info')
         
         if num_tag and info_tag:
-            num = num_tag.get_text().strip()
-            info = info_tag.get_text().strip()
-            # 각 절을 <div>로 감싸서 무조건 줄바꿈이 일어나게 합니다.
-            # margin-bottom을 주어 절 사이의 간격을 벌립니다.
-            bible_text += f'<div style="margin-bottom: 12px; display: block;">'
+            num = num_tag.get_text().strip()   # 예: "1"
+            info = info_tag.get_text().strip() # 예: "하나님이 야곱에게 이르시되..."
+            
+            # <div> 태그에 display: block 스타일을 주어 무조건 한 줄을 다 차지하게 합니다.
+            # margin-bottom은 절과 절 사이의 간격을 조절합니다.
+            bible_text += f'<div style="display: block; margin-bottom: 12px; clear: both;">'
             bible_text += f'<b style="color: #0969da; margin-right: 8px;">{num}절</b>'
             bible_text += f'<span>{info}</span>'
             bible_text += f'</div>'
