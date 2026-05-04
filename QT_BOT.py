@@ -60,37 +60,40 @@ def get_qt_data():
 
     return bible_text, exp_text + prayer_text
 
-# --- 3. 메시지 전송 함수 ---
-def send_kakao_msg(token, text_content):
+# --- 3. 메시지 분할 전송 함수 (글자 수 제한 완벽 대응) ---
+def send_long_message(token, title, full_text):
     send_url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
-    target_url = "https://sum.su.or.kr:8888/bible/today"
     headers = {"Authorization": f"Bearer {token}"}
+    target_url = "https://sum.su.or.kr:8888/bible/today"
     
-    # 텍스트가 너무 길 경우 카카오 제한(약 400자)에 걸릴 수 있으므로 슬라이싱
-    if len(text_content) > 400:
-        text_content = text_content[:397] + "..."
+    # 350자 단위로 텍스트 쪼개기 (안전을 위해 400자보다 적게 설정)
+    chunk_size = 350
+    chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
+    
+    for idx, chunk in enumerate(chunks):
+        # 메시지 제목 표시 (예: [해설 1/3])
+        display_text = f"[{title} {idx+1}/{len(chunks)}]\n\n{chunk}"
+        
+        post_data = {
+            "template_object": json.dumps({
+                "object_type": "text",
+                "text": display_text,
+                "link": {"web_url": target_url, "mobile_web_url": target_url},
+                "button_title": "오늘의 QT 페이지"
+            })
+        }
+        res = requests.post(send_url, headers=headers, data=post_data)
+        print(f"{title} {idx+1}번 파트 전송: {res.status_code}")
+        
+        # 연속 전송 시 차단 방지를 위해 잠깐 대기
+        time.sleep(1.5)
 
-    post_data = {
-        "template_object": json.dumps({
-            "object_type": "text",
-            "text": text_content,
-            "link": {"web_url": target_url, "mobile_web_url": target_url},
-            "button_title": "전체보기"
-        })
-    }
-    return requests.post(send_url, headers=headers, data=post_data)
-
-# --- 메인 실행 ---
+# --- 메인 실행 부분 ---
 access_token = get_access_token()
 bible_msg, guide_msg = get_qt_data()
 
-# 첫 번째 메시지: 성경 본문
-res1 = send_kakao_msg(access_token, bible_msg)
-print(f"본문 전송 결과: {res1.status_code}")
+# 1. 성경 본문 전송
+send_long_message(access_token, "📖 성경본문", bible_msg)
 
-# 카카오 API 방어 기제 피하기 위해 2초 대기
-time.sleep(2)
-
-# 두 번째 메시지: 해설 및 기도
-res2 = send_kakao_msg(access_token, guide_msg)
-print(f"해설 전송 결과: {res2.status_code}")
+# 2. 해설 및 기도 전송 (내용이 길어도 쪼개서 다 보냄)
+send_long_message(access_token, "💡 해설/기도", guide_msg)
