@@ -28,7 +28,26 @@ def save_qt_to_md():
     
     # 마크다운 내용 구성 (가독성 업그레이드)
     date_str = datetime.now().strftime("%Y-%m-%d")
+    style_code = """
+        <style>
+        :root { color-scheme: light dark; }
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #0d1117; /* GitHub 다크모드 배경색 */
+                color: #c9d1d9; /* GitHub 다크모드 글자색 */
+            }
+            a { color: #58a6ff; }
+            hr { border-color: #30363d; }
+        }
+        </style>
 
+        """
     md_content = '<meta name="color-scheme" content="light dark">\n\n'
     
     md_content = f"# 📖 오늘의 QT: {main_title}\n\n"
