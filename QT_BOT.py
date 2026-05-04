@@ -60,6 +60,9 @@ def save_qt_to_md():
         
         # 4. 기도 섹션 마무리
         processed_text = processed_text.replace("기도", "\n\n---\n### 🙏 오늘의 기도\n")
+        # 공동체와 열방 앞에 불렛 포인트(-)와 줄바꿈을 추가하여 가독성을 높입니다.
+        processed_text = processed_text.replace("공동체-", "\n\n**🔹 공동체**  \n")
+        processed_text = processed_text.replace("열방-", "\n\n**🔹 열방**  \n")
         
         md_content += processed_text
 
