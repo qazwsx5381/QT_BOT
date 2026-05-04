@@ -152,7 +152,7 @@ def save_qt_to_html():
         </blockquote>
         
         <h3 style="color: #666;">📜 성경 본문</h3>
-        <div style="padding: 15px; border-radius: 8px; border: 1px solid;">
+        <div style="padding: 15px">
             {bible_text}
         </div>
         
