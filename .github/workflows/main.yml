@@ -2,12 +2,14 @@ name: Daily QT Bot
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 7 * * *'
   workflow_dispatch: 
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Seoul
     permissions: # 중요: 저장소 쓰기 권한 추가
       contents: write
       
