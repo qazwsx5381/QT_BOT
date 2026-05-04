@@ -28,12 +28,29 @@ def save_qt_to_html():
     date_str = datetime.now().strftime("%Y-%m-%d")
     
     # [성경 본문 추출] - 각 절을 <div>로 감싸 한 줄씩 구분
+# [성경 본문 추출] - 이미지의 '1절 ... 2절 ...' 구조를 한 줄씩 쪼개기
     bible_text = ""
+    # 사이트 구조에 따라 .bible_verse 또는 li 태그를 유연하게 잡습니다.
     verses = soup.select('#body_list > li')
+    
+    if not verses:
+        # 혹시 li 구조가 아닐 경우를 대비한 2차 선택자
+        verses = soup.select('.bible_verse')
+
     for v in verses:
-        num = v.select_one('.num').text.strip()
-        info = v.select_one('.info').text.strip()
-        bible_text += f'<div style="margin-bottom: 8px;"><b style="color: #0969da;">{num}</b> {info}</div>'
+        # 절 번호(num)와 본문(info)을 각각 추출
+        num_tag = v.select_one('.num')
+        info_tag = v.select_one('.info')
+        
+        if num_tag and info_tag:
+            num = num_tag.get_text().strip()
+            info = info_tag.get_text().strip()
+            # 각 절을 <div>로 감싸서 무조건 줄바꿈이 일어나게 합니다.
+            # margin-bottom을 주어 절 사이의 간격을 벌립니다.
+            bible_text += f'<div style="margin-bottom: 12px; display: block;">'
+            bible_text += f'<b style="color: #0969da; margin-right: 8px;">{num}</b>'
+            bible_text += f'<span>{info}</span>'
+            bible_text += f'</div>'
     
     # [해설 및 기도 가공]
     exp_box = soup.select_one('#body_cont_3')
@@ -42,8 +59,8 @@ def save_qt_to_html():
         raw_text = exp_box.get_text("\n", strip=True)
         
         # 핵심 질문 강조 (글자 크기 키움)
-        processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>')
-        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2>')
+        processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h4 class="q-title">✨ 하나님은 어떤 분입니까?</h4>')
+        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h4 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h4>')
         
         # 절 구분 강조 (📍 아이콘)
         processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'<div class="verse-point">📍 \1</div>', processed_text)
