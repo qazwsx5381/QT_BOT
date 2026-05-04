@@ -24,11 +24,13 @@ def save_qt_to_html():
     soup = BeautifulSoup(res.text, 'html.parser')
 
     main_title = soup.select_one('#bible_text').text.strip()
-    full_title = soup.select_one('#bibleinfo_box_3').text.strip()
+    full_title_raw = soup.select_one('#bibleinfo_box_3').text.strip()
+    # '찬송가'라는 글자와 그 뒤에 오는 숫자/공백을 모두 찾아 삭제합니다.
+    full_title = re.sub(r'찬송가.*', '', full_title_raw).strip()
     date_str = datetime.now().strftime("%Y-%m-%d")
     
     # [성경 본문 추출] - 각 절을 <div>로 감싸 한 줄씩 구분
-# [성경 본문 추출] - 이미지의 '1절 ... 2절 ...' 구조를 한 줄씩 쪼개기
+    # [성경 본문 추출] - 이미지의 '1절 ... 2절 ...' 구조를 한 줄씩 쪼개기
     bible_text = ""
     # 사이트 구조에 따라 .bible_verse 또는 li 태그를 유연하게 잡습니다.
     verses = soup.select('#body_list > li')
@@ -48,7 +50,7 @@ def save_qt_to_html():
             # 각 절을 <div>로 감싸서 무조건 줄바꿈이 일어나게 합니다.
             # margin-bottom을 주어 절 사이의 간격을 벌립니다.
             bible_text += f'<div style="margin-bottom: 12px; display: block;">'
-            bible_text += f'<b style="color: #0969da; margin-right: 8px;">{num}</b>'
+            bible_text += f'<b style="color: #0969da; margin-right: 8px;">{num}절</b>'
             bible_text += f'<span>{info}</span>'
             bible_text += f'</div>'
     
