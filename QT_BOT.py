@@ -51,8 +51,8 @@ def save_qt_to_file():
 def send_kakao(token, title, file_path):
     # GitHub 저장소의 파일 직접 보기 주소 구성 (본인 계정/레포명 확인 필수)
     # 예: https://github.com/사용자아이디/레포명/blob/main/data/QT_2026-05-04.txt
-    user_id = "본인의_GitHub_아이디"
-    repo_name = "본인의_레포지토리_이름"
+    user_id = "qazwsx5381@gmail.com"
+    repo_name = "QT_BOT"
     github_link = f"https://github.com/{user_id}/{repo_name}/blob/main/{file_path}"
 
     url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
