@@ -4,6 +4,7 @@ import os
 import json
 from datetime import datetime
 import time
+import re
 
 # --- 1. 카카오 토큰 갱신 ---
 def get_access_token():
