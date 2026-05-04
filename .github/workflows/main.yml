@@ -31,8 +31,16 @@ jobs:
       # 생성된 파일을 저장소에 업데이트하는 단계
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "GitHub Action Bot"
+          git config --global user.name "qazwsx5381"
           git config --global user.email "qazwsx5381@gmail.com"
-          git add data/*.txt
-          git commit -m "Add daily QT file: $(date +'%Y-%m-%d')" || exit 0
-          git push
+          
+          # 고정된 파일 하나만 추가
+          git add data/today_qt.md
+          
+          # 내용이 변경되었을 때만 커밋 (중복 실행 방지)
+          if git diff --staged --quiet; then
+            echo "변경사항이 없습니다."
+          else
+            git commit -m "Update daily QT: $(date +'%Y-%m-%d')"
+            git push
+          fi
