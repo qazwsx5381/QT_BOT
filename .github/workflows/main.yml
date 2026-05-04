@@ -2,27 +2,37 @@ name: Daily QT Bot
 
 on:
   schedule:
-    - cron: '0 21 * * *' # 한국 시간 오전 6시
+    - cron: '0 23 * * *'
   workflow_dispatch: 
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      # v3 -> v4로 업데이트 (Node.js 최신 버전 지원)
-      - uses: actions/checkout@v4 
+    permissions: # 중요: 저장소 쓰기 권한 추가
+      contents: write
       
-      # v4 -> v5로 업데이트 (Node.js 최신 버전 지원)
+    steps:
+      - uses: actions/checkout@v4
+      
       - name: Set up Python
-        uses: actions/setup-python@v5 
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           
       - name: Install dependencies
         run: pip install requests beautifulsoup4
         
-      - name: Run Bot
+      - name: Run Bot and Create File
         env:
           KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
           KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
         run: python QT_BOT.py
+        
+      # 생성된 파일을 저장소에 업데이트하는 단계
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "qazwsx5381@gmail.com"
+          git add data/*.txt
+          git commit -m "Add daily QT file: $(date +'%Y-%m-%d')" || exit 0
+          git push
