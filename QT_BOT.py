@@ -57,6 +57,7 @@ def save_qt_to_md():
         # 3. 절 구분 강조 (1절, 2-5절 등)
         # 이미 질문 섹션이 나뉘었으므로, 그 안의 절들을 소제목으로 바꿉니다.
         processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'\n\n#### 📍 \1', processed_text)
+        processed_text = processed_text.replace("절", "절\n")
         
         # 4. 기도 섹션 마무리
         processed_text = processed_text.replace("기도", "\n\n---\n### 🙏 오늘의 기도\n")
