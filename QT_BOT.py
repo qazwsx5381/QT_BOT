@@ -25,6 +25,7 @@ def save_qt_to_html():
 
     main_title = soup.select_one('#bible_text').text.strip()
     full_title_raw = soup.select_one('#bibleinfo_box_3').text.strip()
+    full_title = full_title_raw.replace("본문 : ", "").strip()
     # '찬송가'라는 글자와 그 뒤에 오는 숫자/공백을 모두 찾아 삭제합니다.
     full_title = re.sub(r'찬송가.*', '', full_title_raw).strip()
     date_str = datetime.now().strftime("%Y-%m-%d")
@@ -146,8 +147,8 @@ def save_qt_to_html():
     <body>
         <h1>📖 오늘의 QT: {main_title}</h1>
         <blockquote>
-            <strong>날짜:</strong> {date_str}<br>
-            <strong>본문:</strong> {full_title}
+            <strong>날짜 :</strong> {date_str}<br>
+            <strong>본문 :</strong> {full_title}
         </blockquote>
         
         <h3 style="color: #666;">📜 성경 본문</h3>
