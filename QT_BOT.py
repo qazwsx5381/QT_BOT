@@ -27,7 +27,7 @@ def save_qt_to_html():
     full_title_raw = soup.select_one('#bibleinfo_box_3').text.strip()
     full_title = full_title_raw.replace("본문 : ", "").strip()
     # '찬송가'라는 글자와 그 뒤에 오는 숫자/공백을 모두 찾아 삭제합니다.
-    full_title = re.sub(r'찬송가.*', '', full_title_raw).strip()
+    full_title = re.sub(r'찬송가.*', '', full_title).strip()
     date_str = datetime.now().strftime("%Y-%m-%d")
     
     # [성경 본문 추출] - 각 절을 <div>로 감싸 한 줄씩 구분
@@ -169,7 +169,9 @@ def save_qt_to_html():
     """
 
     if not os.path.exists('data'): os.makedirs('data')
-    filename = "data/today_qt.html"
+
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    filename = f"data/QT_{date_str}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_template)
     
