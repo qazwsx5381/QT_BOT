@@ -143,7 +143,7 @@ def save_qt_to_html():
                 font-size: 0.95rem;
             }}
             
-            .content-area {{ font-size: 1.15rem; word-break: keep-all; }} /* 해설 본문 글자 크기 업그레이드 */
+            .content-area {{ font-size: 1.15rem; word-break: keep-all; margin: 15px; }} /* 해설 본문 글자 크기 업그레이드 */
             
             hr {{ border: 0; border-top: 1px solid #d0d7de; margin: 40px 0; }}
 
