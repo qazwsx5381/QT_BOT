@@ -85,6 +85,8 @@ def save_qt_to_html():
         # 일반 줄바꿈
         processed_text = processed_text.replace("\n", "<br>")
         processed_text = re.sub(r'(<br\s*/?>\s*){2,}', '<br>', processed_text)
+        processed_text = processed_text.replace('</h2><br>', '</h2>')
+        processed_text = processed_text.replace('</div><br>', '</div>')
 
     # --- HTML 스타일 및 구조 정의 ---
     html_template = f"""
@@ -100,13 +102,14 @@ def save_qt_to_html():
                 max-width: 600px;
                 margin: 0 auto;
                 padding: 20px;
-                line-height: 1.8;
+                line-height: 1.5;
                 font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
                 background-color: #ffffff;
                 color: #1f2328;
                 font-size: 1.05rem;
             }}
             h1 {{ font-size: 1.6rem; border-bottom: 2px solid #eaecef; padding-bottom: 10px; margin-bottom: 20px; }}
+            br {{ content: ""; display: block; margin: 5px 0; }}
             
             /* 질문 제목 강조 */
             .q-title {{ 
