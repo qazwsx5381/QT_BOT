@@ -67,14 +67,16 @@ def save_qt_to_html():
         processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>', processed_text)
         
         # 절 구분 강조 (📍 아이콘)
-        pattern = r'(?<!\()(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
+        pattern = r'(^|(?<=\s))(?<!\()(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
         
         def add_verse_suffix(match):
-            text = match.group(0)
-            # 이미 '절'이라는 글자가 포함되어 있지 않다면 '절'을 붙여줍니다.
-            if '절' not in text:
-                return f'<div class="verse-point">📍 {text}절</div>'
-            return f'<div class="verse-point">📍 {text}</div>'
+            # match.group(1)은 숫자 앞의 공백이나 시작점, group(2)는 숫자 본문입니다.
+            prefix = match.group(1)
+            text = match.group(2)
+            
+            suffix = "절" if "절" not in text else ""
+            # 확실하게 줄바꿈(<br>)과 강조 디자인을 적용하여 반환합니다.
+        return f'<br><div class="verse-point">📍 {text}{suffix}</div>'
 
         processed_text = re.sub(pattern, add_verse_suffix, processed_text)
         
