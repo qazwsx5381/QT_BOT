@@ -50,7 +50,7 @@ def save_qt_to_html():
             
             # <div> 태그에 display: block 스타일을 주어 무조건 한 줄을 다 차지하게 합니다.
             # margin-bottom은 절과 절 사이의 간격을 조절합니다.
-            bible_text += f'<div style="padding: 15px;" class="content-area">'
+            bible_text += f'<div class="content-area">'
             bible_text += f'<b style="color: #0969da; margin-right: 8px;">{num}절</b>'
             bible_text += f'<span>{info}</span>'
             bible_text += f'</div>'
@@ -86,7 +86,9 @@ def save_qt_to_html():
         processed_text = processed_text.replace("\n", "<br>")
         processed_text = re.sub(r'(<br\s*/?>\s*){2,}', '<br>', processed_text)
         processed_text = processed_text.replace('</h2><br>', '</h2>')
+        processed_text = processed_text.replace('</h4><br>', '</h4>')
         processed_text = processed_text.replace('</div><br>', '</div>')
+        processed_text = processed_text.replace('</h4><br><div', '</h4><div')
 
     # --- HTML 스타일 및 구조 정의 ---
     html_template = f"""
