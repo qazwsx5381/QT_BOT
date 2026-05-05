@@ -67,7 +67,7 @@ def save_qt_to_html():
         processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>', processed_text)
         
         # 절 구분 강조 (📍 아이콘)
-        pattern = r'(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
+        pattern = r'(?<!\()(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
         
         def add_verse_suffix(match):
             text = match.group(0)
