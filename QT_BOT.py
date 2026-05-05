@@ -64,12 +64,21 @@ def save_qt_to_html():
         # 핵심 질문 강조 (글자 크기 키움)
         processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h4 class="q-title">✨ 하나님은 어떤 분입니까?</h4>')
         processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h4 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h4>')
+        processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>', processed_text)
         
         # 절 구분 강조 (📍 아이콘)
-        processed_text = re.sub(r'(\d+-\d+절|\d+절)', r'<div class="verse-point">📍 \1</div>', processed_text)
+        pattern = r'(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
+        
+        def add_verse_suffix(match):
+            text = match.group(0)
+            # 이미 '절'이라는 글자가 포함되어 있지 않다면 '절'을 붙여줍니다.
+            if '절' not in text:
+                return f'<div class="verse-point">📍 {text}절</div>'
+            return f'<div class="verse-point">📍 {text}</div>'
+
+        processed_text = re.sub(pattern, add_verse_suffix, processed_text)
         
         # 기도 섹션
-        processed_text = processed_text.replace("기도", '<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>')
         processed_text = processed_text.replace("공동체-", '<div class="pray-item"><b>🔹 공동체</b></div>')
         processed_text = processed_text.replace("열방-", '<div class="pray-item"><b>🔹 열방</b></div>')
         
