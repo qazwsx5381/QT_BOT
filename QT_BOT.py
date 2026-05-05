@@ -70,15 +70,16 @@ def save_qt_to_html():
         pattern = r'(^|(?<=\s))(?<!\()(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
         
         def add_verse_suffix(match):
-            # match.group(1)은 숫자 앞의 공백이나 시작점, group(2)는 숫자 본문입니다.
+            # match.group(1)은 숫자 앞의 공백이나 시작점, group(2)는 숫자 본체입니다.
             prefix = match.group(1)
-            text = match.group(2)
+            verse_num = match.group(2) # 여기서 변수명을 verse_num으로 통일합니다.
             
-            suffix = "절" if "절" not in text else ""
-            # 확실하게 줄바꿈(<br>)과 강조 디자인을 적용하여 반환합니다.
-        return f'<br><div class="verse-point">📍 {text}{suffix}</div>'
+            suffix = "절" if "절" not in verse_num else ""
+            # <br>을 두 번 넣어 문단을 확실히 쪼개고 📍 아이콘을 붙입니다.
+            return f'<br><div class="verse-point">📍 {verse_num}{suffix}</div>'
 
-        processed_text = re.sub(pattern, add_verse_suffix, processed_text)
+        # flags=re.MULTILINE을 써야 줄 시작(^)을 제대로 인식합니다.
+        processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
         
         # 기도 섹션
         processed_text = processed_text.replace("공동체-", '<div class="pray-item"><b>🔹 공동체</b></div>')
