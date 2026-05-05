@@ -67,18 +67,15 @@ def save_qt_to_html():
         processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>', processed_text)
         
         # 절 구분 강조 (📍 아이콘)
-        pattern = r'(^|(?<=\s))(?<!\()(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
+        pattern = r'(?<!\()(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)(?!\))'
         
         def add_verse_suffix(match):
-            # match.group(1)은 숫자 앞의 공백이나 시작점, group(2)는 숫자 본체입니다.
-            prefix = match.group(1)
-            verse_num = match.group(2) # 여기서 변수명을 verse_num으로 통일합니다.
-            
+            verse_num = match.group(1)
+            # 이미 '절'이 붙어 있지 않은 경우에만 '절'을 추가하고 📍 스타일 적용
             suffix = "절" if "절" not in verse_num else ""
-            # <br>을 두 번 넣어 문단을 확실히 쪼개고 📍 아이콘을 붙입니다.
             return f'<br><div class="verse-point">📍 {verse_num}{suffix}</div>'
 
-        # flags=re.MULTILINE을 써야 줄 시작(^)을 제대로 인식합니다.
+        # 문장 중간이 아닌 독립적인 위치의 숫자만 잡기 위해 flags=re.MULTILINE 사용
         processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
         
         # 기도 섹션
