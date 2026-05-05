@@ -117,7 +117,7 @@ def save_qt_to_html():
             .q-title {{ 
                 font-size: 1.4rem; 
                 color: #d11010; 
-                margin-top: 40px; 
+                margin-top: 20px; 
                 margin-bottom: 15px;
                 border-left: 5px solid #d11010;
                 padding-left: 10px;
@@ -145,7 +145,7 @@ def save_qt_to_html():
             
             .content-area {{ font-size: 1.15rem; word-break: keep-all; margin: 15px; }} /* 해설 본문 글자 크기 업그레이드 */
             
-            hr {{ border: 0; border-top: 1px solid #d0d7de; margin: 40px 0; }}
+            hr {{ border: 0; border-top: 1px solid #d0d7de; margin: 20px 0; }}
 
             /* 다크모드 대응 */
             @media (prefers-color-scheme: dark) {{
