@@ -84,6 +84,7 @@ def save_qt_to_html():
         
         # 일반 줄바꿈
         processed_text = processed_text.replace("\n", "<br>")
+        processed_text = re.sub(r'(<br\s*/?>\s*){2,}', '<br>', processed_text)
 
     # --- HTML 스타일 및 구조 정의 ---
     html_template = f"""
