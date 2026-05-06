@@ -59,28 +59,44 @@ def save_qt_to_html():
     exp_box = soup.select_one('#body_cont_3')
     processed_text = ""
     if exp_box:
+        # 1. 텍스트 추출
         raw_text = exp_box.get_text("\n", strip=True)
         
-        # 핵심 질문 강조 (글자 크기 키움)
-        processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h4 class="q-title">✨ 하나님은 어떤 분입니까?</h4>')
-        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h4 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h4>')
-        processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h4 class="q-title">🙏 오늘의 기도</h4>', processed_text)
+        # 2. 질문 및 기도 제목 강조
+        processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>')
+        processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2>')
+        processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h2 class="q-title">🙏 오늘의 기도</h2>', processed_text)
+
+        # 3. [핵심] 괄호 안의 모든 내용 임시 보호
+        # 괄호와 그 안의 내용을 찾아 리스트에 저장하고 고유 키로 치환합니다.
+        brackets_storage = {}
+        def hide_brackets(match):
+            key = f"__BRACKET_{len(brackets_storage)}__"
+            brackets_storage[key] = match.group(0)
+            return key
         
-        # 절 구분 강조 (📍 아이콘)
-        pattern = r'(?<!\()(?<!\(\d:)(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)(?!\))'
+        # ( ... ) 형태를 모두 찾아 숨김
+        processed_text = re.sub(r'\([^)]+\)', hide_brackets, processed_text)
+
+        # 4. 이제 괄호 걱정 없이 절 번호 분리 (📍 표시)
+        # 괄호가 이미 숨겨졌으므로 단순한 패턴만 써도 안전합니다.
+        pattern = r'(\d+:\d+-\d+|\d+:\d+|\d+-\d+절|\d+절)'
         
         def add_verse_suffix(match):
             verse_num = match.group(1)
-            # 이미 '절'이 붙어 있지 않은 경우에만 '절'을 추가하고 📍 스타일 적용
             suffix = "절" if "절" not in verse_num else ""
             return f'<br><div class="verse-point">📍 {verse_num}{suffix}</div>'
 
-        # 문장 중간이 아닌 독립적인 위치의 숫자만 잡기 위해 flags=re.MULTILINE 사용
         processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
-        
-        # 기도 섹션
+
+        # 5. 보호했던 괄호 내용 다시 복구
+        for key, original_value in brackets_storage.items():
+            processed_text = processed_text.replace(key, original_value)
+
+        # 6. 기타 가공 및 줄바꿈 정리
         processed_text = processed_text.replace("공동체-", '<div class="pray-item"><b>🔹 공동체</b></div>')
         processed_text = processed_text.replace("열방-", '<div class="pray-item"><b>🔹 열방</b></div>')
+        processed_text = processed_text.replace("\n", "<br>")
         
         # 일반 줄바꿈
         processed_text = processed_text.replace("\n", "<br>")
