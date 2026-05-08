@@ -80,7 +80,7 @@ def save_qt_to_html():
 
         # 4. 이제 괄호 걱정 없이 절 번호 분리 (📍 표시)
         # 괄호가 이미 숨겨졌으므로 단순한 패턴만 써도 안전합니다.
-        pattern = r'(\d+[:\-\d,\s]*\d+(?:절)?)'
+        pattern = r'^(?=.*절)(?!.*장)(\d+[:\-\d,\s]*\d+(?:절)?)'
         
         def add_verse_suffix(match):
             verse_num = match.group(1)
