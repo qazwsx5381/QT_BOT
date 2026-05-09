@@ -67,25 +67,28 @@ def save_qt_to_html():
         processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2>')
         processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h2 class="q-title">🙏 오늘의 기도</h2>', processed_text)
 
-        # 3. [핵심] 괄호 안의 모든 내용 임시 보호
-        # 괄호와 그 안의 내용을 찾아 리스트에 저장하고 고유 키로 치환합니다.
+        # 3. 괄호 안 내용 완벽 보호
         brackets_storage = {}
         def hide_brackets(match):
             key = f"__BRACKET_{len(brackets_storage)}__"
             brackets_storage[key] = match.group(0)
             return key
-        
-        # ( ... ) 형태를 모두 찾아 숨김
         processed_text = re.sub(r'\([^)]+\)', hide_brackets, processed_text)
 
-        # 4. 이제 괄호 걱정 없이 절 번호 분리 (📍 표시)
-        # 괄호가 이미 숨겨졌으므로 단순한 패턴만 써도 안전합니다.
-        pattern = r'^(?!.*장)(\d+[:\-\d,\s]*\d+(?:절)?)'
+        # 3.5 [오류 방지] 마침표 뒤에 절 번호가 실수로 붙어있을 경우 강제로 줄을 뗌
+        # (예: "것입니다.1-11절" -> "것입니다.\n1-11절")
+        processed_text = re.sub(r'(?<=[.!?])\s*(?=\d+[:\-\d,\s]*\d+절?\s)', '\n', processed_text)
+
+        # 4. [초정밀 타겟팅] 줄 맨 앞의 절 번호만 분리
+        # ^ : 줄의 시작 (MULTILINE 적용)
+        # (\d+[:\-\d,\s]*\d+절?|\d+절?) : "1-11절", "36:1-5" 형태 모두 포함
+        # (?=\s) : [핵심] 바로 뒤에 무조건 띄어쓰기(공백)가 있어야 함!!
+        pattern = r'^(\d+[:\-\d,\s]*\d+절?|\d+절?)(?=\s)'
         
         def add_verse_suffix(match):
-            verse_num = match.group(1)
-            suffix = "절" if "절" not in verse_num else ""
-            return f'<br><div class="verse-point">📍 {verse_num}{suffix}</div>'
+            verse_range = match.group(1).strip()
+            suffix = "절" if "절" not in verse_range else ""
+            return f'<br><div class="verse-point">📍 {verse_range}{suffix}</div>'
 
         processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
 
