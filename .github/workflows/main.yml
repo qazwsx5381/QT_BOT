@@ -2,7 +2,7 @@ name: Daily QT Bot
 
 on:
   schedule:
-    - cron: '5 22 * * *'
+    - cron: '5 21 * * *'
   workflow_dispatch: 
 
 jobs:
