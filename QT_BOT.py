@@ -83,7 +83,7 @@ def save_qt_to_html():
         # ^ : 줄의 시작 (MULTILINE 적용)
         # (\d+[:\-\d,\s]*\d+절?|\d+절?) : "1-11절", "36:1-5" 형태 모두 포함
         # (?=\s) : [핵심] 바로 뒤에 무조건 띄어쓰기(공백)가 있어야 함!!
-        pattern = r'^(\d+[:\-\d,\s]*\d+절?|\d+절?)(?=\s)'
+        pattern = r'^(?!\s)(?.*장)(?:(\d+절-\d+:\d+)|(\d+[:\-\d,\s]*\d+절?)|(\d+절))(?=\s)'
         
         def add_verse_suffix(match):
             verse_range = match.group(1).strip()
