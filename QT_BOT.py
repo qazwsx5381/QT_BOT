@@ -62,61 +62,56 @@ def save_qt_to_html():
         # 1. 텍스트 추출
         raw_text = exp_box.get_text("\n", strip=True)
         
+        # [1순위 실행] 복잡한 절-장-절 형태를 한국어로 최우선 변환 ("31절-47:10" -> "31절 - 47장 10절")
+        complex_pattern = r'(\d+절)\s*-\s*(\d+)\s*:\s*(\d+)'
+        
+        def convert_to_korean_verse(match):
+            start_verse = match.group(1)     # "31절"
+            target_chapter = match.group(2)  # "47"
+            end_verse = match.group(3)       # "10"
+            return f"{start_verse} - {target_chapter}장 {end_verse}절"
+
+        processed_text = re.sub(complex_pattern, convert_to_korean_verse, raw_text)
+        
         # 2. 질문 및 기도 제목 강조
-        processed_text = raw_text.replace("하나님은 어떤 분입니까?", '<h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>')
+        processed_text = processed_text.replace("하나님은 어떤 분입니까?", '<h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>')
         processed_text = processed_text.replace("내게 주시는 교훈은 무엇입니까?", '<h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2>')
         processed_text = re.sub(r'(?m)^기도$', r'<br><hr><h2 class="q-title">🙏 오늘의 기도</h2>', processed_text)
 
-        # 3. [핵심] 괄호 안의 모든 내용 임시 보호
-        # 괄호와 그 안의 내용을 찾아 리스트에 저장하고 고유 키로 치환합니다.
+        # 3. 괄호 안 다중 구절 분석 및 링크 분리 생성
         brackets_storage = {}
         def hide_brackets(match):
             key = f"__BRACKET_{len(brackets_storage)}__"
             brackets_storage[key] = match.group(0)
             return key
         
-        # ( ... ) 형태를 모두 찾아 숨김
         processed_text = re.sub(r'\([^)]+\)', hide_brackets, processed_text)
-        
-        # 3.2 [신규] 복잡한 절-장-절 형태를 한국어로 친절하게 변환
-        # 패턴 설명:
-        # (\d+절)- : "31절-" 부분을 1번 그룹으로 캡처
-        # (\d+): : "47:" 장 숫자를 2번 그룹으로 캡처
-        # (\d+) : "10" 절 숫자를 3번 그룹으로 캡처
-        complex_pattern = r'(\d+절)-(\d+):(\d+)'
-        
-        def convert_to_korean_verse(match):
-            start_verse = match.group(1) # "31절"
-            target_chapter = match.group(2) # "47"
-            end_verse = match.group(3) # "10"
-            
-            # "31절 - 47장 10절" 형태로 조립하여 반환
-            return f"{start_verse}-{target_chapter}장 {end_verse}절"
 
-        processed_text = re.sub(complex_pattern, convert_to_korean_verse, processed_text)
+        # 3.5 [핵심 전처리] 모든 절 번호 형태 패턴 앞에 강제로 줄바꿈(\n)을 뚫어줍니다.
+        # 이 단계가 있어야 문장 중간에 숨은 "13-17절", "10절" 등이 줄의 맨 앞으로 내려옵니다.
+        verse_split_pattern = r'\s*(\d+절\s*-\s*\d+장\s*\d+절|\d+[:\-\d,\s]*\d+절|\d+절)\s*'
+        processed_text = re.sub(verse_split_pattern, r'\n\1 ', processed_text)
 
-        # 3.5 [오류 방지 및 전처리] 한글로 바뀐 형태까지 포함하여 절 번호 앞에 줄바꿈(\n) 삽입
-        processed_text = re.sub(r'\s*(\d+절\s*-\s*\d+장\s*\d+절|\d+절-\d+:\d+|\d+[:\-\d,\s]*\d+절|\d+절)\s*', r'\n\1 ', processed_text)
-
-        # 4. [최종 레이아웃] 줄 맨 앞의 절 번호를 📍 소제목으로 분리
-        # 패턴에 '\d+절\s*-\s*\d+장\s*\d+절' (31절 - 47장 10절 형태)을 가장 먼저 검사하도록 추가했습니다.
-        pattern = r'^(?!.*장)(?:(\d+절\s*-\s*\d+장\s*\d+절)|(\d+절-\d+:\d+)|(\d+[:\-\d,\s]*\d+절?)|(\d+절))\s*([^\n]+)'
+        # 4. [초정밀 매칭 교정] 줄 맨 앞의 절 번호와 뒤따라오는 해설 내용을 분리하여 📍 소제목 스타일 적용
+        # ^ : 줄의 시작
+        # (?!.*장(?!\d)) : 전체 범위(예: 37-50장)를 걸러내고 "47장 10절"의 '장'은 통과시키는 룩아헤드
+        # (.*?) : 뒤이어 나오는 본문 해설 내용 전체 캡처
+        pattern = r'^(?!.*장(?!\d))(\d+절\s*-\s*\d+장\s*\d+절|\d+[:\-\d,\s]*\d+절|\d+절)\s*(.*)'
         
         def add_verse_suffix(match):
-            verse_range = match.group(1) or match.group(0).split(' ')[0] # 매칭된 절 덩어리만 안전하게 추출
-            verse_range = verse_range.strip()
-            rest_of_text = match.group(match.lastindex).strip() # 나머지 본문 해설 전체
+            verse_range = match.group(1).strip() # 분리된 절 번호 덩어리
+            rest_of_text = match.group(2).strip() # 뒤에 오는 본문 해설
             
-            # 끝이 숫자로 끝나고 '절'이나 '장'이 아예 없는 순수 숫자 덩어리에만 '절'을 붙임
-            if not any(keyword in verse_range for keyword in ["절", "장"]) and verse_range[-1].isdigit():
+            # 끝이 숫자로 끝나고 '절'이나 '장'이 없는 순수 숫자 패턴에만 '절' 보정
+            if not any(k in verse_range for k in ["절", "장"]) and verse_range[-1].isdigit():
                 suffix = "절"
             else:
                 suffix = ""
                 
             return f'<br><div class="verse-point">📍 {verse_range}{suffix}</div>{rest_of_text}'
 
+        # MULTILINE 플래그와 함께 적용하여 모든 문단을 재정렬합니다.
         processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
-
 
         # 5. 보호했던 괄호 내용 다시 복구
         for key, original_value in brackets_storage.items():
