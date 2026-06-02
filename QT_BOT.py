@@ -78,15 +78,29 @@ def save_qt_to_html():
         # ( ... ) 형태를 모두 찾아 숨김
         processed_text = re.sub(r'\([^)]+\)', hide_brackets, processed_text)
 
-        # 4. 이제 괄호 걱정 없이 절 번호 분리 (📍 표시)
-        # 괄호가 이미 숨겨졌으므로 단순한 패턴만 써도 안전합니다.
-        pattern = r'^(?!.*장)(?:(\d+절-\d+:\d+)|(\d+[:\-\d,\s]*\d+절?)|(\d+절))(?=\s)'
+        # 3.5 [오류 방지 및 전처리] 문장 중간이나 끝에 붙어 있는 절 번호들 앞에 
+        # 강제로 줄바꿈(\n)을 넣어서 독립적인 문단으로 쪼갭니다.
+        # 예: "합니다. 13-17절 바울과" -> "합니다.\n13-17절 바울과"
+        # 예: "입니다. 10절 같은 말" -> "입니다.\n10절 같은 말"
+        processed_text = re.sub(r'\s*(\d+절-\d+:\d+|\d+[:\-\d,\s]*\d+절|\d+절)\s*', r'\n\1 ', processed_text)
+
+        # 4. [완전 개편] 이제 줄의 맨 앞에 배치된 절 번호 덩어리들을 완벽하게 소제목(📍)화 합니다.
+        # ^ : 줄의 시작
+        # (?!.*장) : '장'이 들어간 줄은 제외 (37-50장 등 방어)
+        # ([^\n]+) : 절 번호 뒤에 오는 나머지 해설 내용들을 통째로 캡처
+        pattern = r'^(?!.*장)(\d+절-\d+:\d+|\d+[:\-\d,\s]*\d+절|\d+절)\s*([^\n]+)'
         
         def add_verse_suffix(match):
-            verse_num = match.group(0).strip()
-            suffix = "절" if "절" not in verse_num else ""
-            return f'<br><div class="verse-point">📍 {verse_num}{suffix}</div>'
+            verse_range = match.group(1).strip()
+            rest_of_text = match.group(2).strip()
+            
+            # 숫자 뒤에 '절'이 안 붙어 있다면 자동으로 붙여줍니다.
+            suffix = "절" if "절" not in verse_range else ""
+            
+            # 📍 소제목을 완성하고, 바로 아래 줄에 본문 내용이 이어지도록 깔끔하게 분리합니다.
+            return f'<br><div class="verse-point">📍 {verse_range}{suffix}</div>{rest_of_text}'
 
+        # flags=re.MULTILINE을 주어 줄바꿈 단위로 확실하게 파싱합니다.
         processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
 
         # 5. 보호했던 괄호 내용 다시 복구
