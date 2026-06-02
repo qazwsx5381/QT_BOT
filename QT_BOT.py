@@ -77,31 +77,46 @@ def save_qt_to_html():
         
         # ( ... ) 형태를 모두 찾아 숨김
         processed_text = re.sub(r'\([^)]+\)', hide_brackets, processed_text)
+        
+        # 3.2 [신규] 복잡한 절-장-절 형태를 한국어로 친절하게 변환
+        # 패턴 설명:
+        # (\d+절)- : "31절-" 부분을 1번 그룹으로 캡처
+        # (\d+): : "47:" 장 숫자를 2번 그룹으로 캡처
+        # (\d+) : "10" 절 숫자를 3번 그룹으로 캡처
+        complex_pattern = r'(\d+절)-(\d+):(\d+)'
+        
+        def convert_to_korean_verse(match):
+            start_verse = match.group(1) # "31절"
+            target_chapter = match.group(2) # "47"
+            end_verse = match.group(3) # "10"
+            
+            # "31절 - 47장 10절" 형태로 조립하여 반환
+            return f"{start_verse}-{target_chapter}장 {end_verse}절"
 
-        # 3.5 [오류 방지 및 전처리] 문장 중간이나 끝에 붙어 있는 절 번호들 앞에 
-        # 강제로 줄바꿈(\n)을 넣어서 독립적인 문단으로 쪼갭니다.
-        # 예: "합니다. 13-17절 바울과" -> "합니다.\n13-17절 바울과"
-        # 예: "입니다. 10절 같은 말" -> "입니다.\n10절 같은 말"
-        processed_text = re.sub(r'\s*(\d+절-\d+:\d+|\d+[:\-\d,\s]*\d+절|\d+절)\s*', r'\n\1 ', processed_text)
+        processed_text = re.sub(complex_pattern, convert_to_korean_verse, processed_text)
 
-        # 4. [완전 개편] 이제 줄의 맨 앞에 배치된 절 번호 덩어리들을 완벽하게 소제목(📍)화 합니다.
-        # ^ : 줄의 시작
-        # (?!.*장) : '장'이 들어간 줄은 제외 (37-50장 등 방어)
-        # ([^\n]+) : 절 번호 뒤에 오는 나머지 해설 내용들을 통째로 캡처
-        pattern = r'^(?!.*장)(\d+절-\d+:\d+|\d+[:\-\d,\s]*\d+절|\d+절)\s*([^\n]+)'
+        # 3.5 [오류 방지 및 전처리] 한글로 바뀐 형태까지 포함하여 절 번호 앞에 줄바꿈(\n) 삽입
+        processed_text = re.sub(r'\s*(\d+절\s*-\s*\d+장\s*\d+절|\d+절-\d+:\d+|\d+[:\-\d,\s]*\d+절|\d+절)\s*', r'\n\1 ', processed_text)
+
+        # 4. [최종 레이아웃] 줄 맨 앞의 절 번호를 📍 소제목으로 분리
+        # 패턴에 '\d+절\s*-\s*\d+장\s*\d+절' (31절 - 47장 10절 형태)을 가장 먼저 검사하도록 추가했습니다.
+        pattern = r'^(?!.*장)(?:(\d+절\s*-\s*\d+장\s*\d+절)|(\d+절-\d+:\d+)|(\d+[:\-\d,\s]*\d+절?)|(\d+절))\s*([^\n]+)'
         
         def add_verse_suffix(match):
-            verse_range = match.group(1).strip()
-            rest_of_text = match.group(2).strip()
+            verse_range = match.group(1) or match.group(0).split(' ')[0] # 매칭된 절 덩어리만 안전하게 추출
+            verse_range = verse_range.strip()
+            rest_of_text = match.group(match.lastindex).strip() # 나머지 본문 해설 전체
             
-            # 숫자 뒤에 '절'이 안 붙어 있다면 자동으로 붙여줍니다.
-            suffix = "절" if "절" not in verse_range else ""
-            
-            # 📍 소제목을 완성하고, 바로 아래 줄에 본문 내용이 이어지도록 깔끔하게 분리합니다.
+            # 끝이 숫자로 끝나고 '절'이나 '장'이 아예 없는 순수 숫자 덩어리에만 '절'을 붙임
+            if not any(keyword in verse_range for keyword in ["절", "장"]) and verse_range[-1].isdigit():
+                suffix = "절"
+            else:
+                suffix = ""
+                
             return f'<br><div class="verse-point">📍 {verse_range}{suffix}</div>{rest_of_text}'
 
-        # flags=re.MULTILINE을 주어 줄바꿈 단위로 확실하게 파싱합니다.
         processed_text = re.sub(pattern, add_verse_suffix, processed_text, flags=re.MULTILINE)
+
 
         # 5. 보호했던 괄호 내용 다시 복구
         for key, original_value in brackets_storage.items():
