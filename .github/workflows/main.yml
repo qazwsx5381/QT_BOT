@@ -31,10 +31,11 @@ jobs:
         run: python QT_BOT.py
         
       # 생성된 파일을 저장소에 업데이트하는 단계
-      - name: Commit and Push
+      - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions"
-          git config --global user.email "action@github.com"
-          git add data/*.html  # 이 부분이 .md에서 .html로 바뀌었는지 확인!
-          git commit -m "Update Today's QT (HTML)" || echo "No changes to commit"
-          git push
+          git config --global user.email "github-actions@github.com"
+          git add .
+          # 뒤에 || echo "No changes" 를 붙여주면 바뀐 게 없어도 에러 없이 통과합니다.
+          git commit -m "정기 QT 업데이트 (${{ env.DATE }})" || echo "No changes to commit"
+          git push origin main || echo "Nothing to push"
