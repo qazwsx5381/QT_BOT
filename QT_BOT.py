@@ -83,7 +83,7 @@ def save_qt_to_html():
         pattern = r'^(?!.*장)(?:(\d+절-\d+:\d+)|(\d+[:\-\d,\s]*\d+절?)|(\d+절))(?=\s)'
         
         def add_verse_suffix(match):
-            verse_num = match.group(1)
+            verse_num = match.group(0).strip()
             suffix = "절" if "절" not in verse_num else ""
             return f'<br><div class="verse-point">📍 {verse_num}{suffix}</div>'
 
