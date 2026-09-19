@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 가시나무의 그늘</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        .top-bar { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; color: #24292f; }
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 12% auto; width: 90%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { height: 380px; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        #bibleFrame { width: 100%; height: 100%; border: none; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-verse-row { display: flex; margin-bottom: 12px; }
+        .modal-v-badge { min-width: 45px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.9); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button onclick="changeFontSize(-1)">A-</button>
+            <button onclick="changeFontSize(0)">기본</button>
+            <button onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <!-- 1. 한글 매일성경 패널 -->
+    <section id="panel-kr" style="display: block;">
+        <h1>📖 오늘의 QT: 가시나무의 그늘</h1>
+        <div class="title-divider"></div>
+        <blockquote>
+            <strong>날짜 :</strong> 2026-09-20<br>
+            <strong>본문 :</strong> 사사기(Judges) 9:7 - 9:21
+        </blockquote>
+        <div class="section-header">📜 성경 본문 (개역개정)</div>
+        <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">사람들이 요담에게 그 일을 알리매 요담이 그리심 산 꼭대기로 가서 서서 그의 목소리를 높여 그들에게 외쳐 이르되 세겜 사람들아 내 말을 들으라 그리하여야 하나님이 너희의 말을 들으시리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">하루는 나무들이 나가서 기름을 부어 자신들 위에 왕으로 삼으려 하여 감람나무에게 이르되 너는 우리 위에 왕이 되라 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">감람나무가 그들에게 이르되 내게 있는 나의 기름은 하나님과 사람을 영화롭게 하나니 내가 어찌 그것을 버리고 가서 나무들 위에 우쭐대리요 한지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">나무들이 또 무화과나무에게 이르되 너는 와서 우리 위에 왕이 되라 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">무화과나무가 그들에게 이르되 나의 단 것과 나의 아름다운 열매를 내가 어찌 버리고 가서 나무들 위에 우쭐대리요 한지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">나무들이 또 포도나무에게 이르되 너는 와서 우리 위에 왕이 되라 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">포도나무가 그들에게 이르되 하나님과 사람을 기쁘게 하는 내 포도주를 내가 어찌 버리고 가서 나무들 위에 우쭐대리요 한지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 모든 나무가 가시나무에게 이르되 너는 와서 우리 위에 왕이 되라 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">가시나무가 나무들에게 이르되 만일 너희가 참으로 내게 기름을 부어 너희 위에 왕으로 삼겠거든 와서 내 그늘에 피하라 그리하지 아니하면 불이 가시나무에서 나와서 레바논의 백향목을 사를 것이니라 하였느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이제 너희가 아비멜렉을 세워 왕으로 삼았으니 너희가 행한 것이 과연 진실하고 의로우냐 이것이 여룹바알과 그의 집을 선대함이냐 이것이 그의 손이 행한 대로 그에게 보답함이냐</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리 아버지가 전에 죽음을 무릅쓰고 너희를 위하여 싸워 미디안의 손에서 너희를 건져냈거늘</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희가 오늘 일어나 우리 아버지의 집을 쳐서 그의 아들 칠십 명을 한 바위 위에서 죽이고 그의 여종의 아들 아비멜렉이 너희 형제가 된다고 그를 세워 세겜 사람들 위에 왕으로 삼았도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">만일 너희가 오늘 여룹바알과 그의 집을 대접한 것이 진실하고 의로운 일이면 너희가 아비멜렉으로 말미암아 기뻐할 것이요 아비멜렉도 너희로 말미암아 기뻐하려니와</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그렇지 아니하면 아비멜렉에게서 불이 나와서 세겜 사람들과 밀로의 집을 사를 것이요 세겜 사람들과 밀로의 집에서도 불이 나와 아비멜렉을 사를 것이니라 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">요담이 그의 형제 아비멜렉 앞에서 도망하여 피해서 브엘로 가서 거기에 거주하니라</div></div></div></div>
+        <hr>
+        <div class="content-area">기드온의 아들 중에 간신히 살아남은 요담이 ‘나무 우화’를 통해, 아비멜렉의 불의한 왕권과 그를 왕으로 추대한 세겜 사람들의 잘못을 정죄합니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 7-13절</div>감람나무, 무화과나무, 포도나무는 왕이 되어 달라는 제의를 받지만 정중하게 거절합니다. 지금 자신의 역할만으로도 충분히 다른 사람을 도우며 하나님을 영화롭게 할 수 있기에, 굳이 왕이 될 욕심을 부리지 않겠다고 말합니다. 하나님이 내게 맡기신 소중한 사명을 하찮게 여기는 이유는 세상에서 “우쭐댈” 수 있는 삶을 더 꿈꾸기 때문입니다. 이 ‘우쭐댐’(히. 누아)은 왕이 된 나무가 다른 나무들 위에서 자기를 과시하기 위해 어슬렁거리는 모습을 묘사하는 단어입니다. 내 신앙과 인생의 목적이 고작 이런 모습은 아닌지 돌아봅시다.<br><div class="verse-point">📍 14-15절</div>가시나무는 다른 나무들과 달리 왕이 되어 달라는 제안을 수락합니다. 그늘을 만들 수 없는 가시라는 존재가 그늘을 공약으로 제시합니다. 이 한계를 자신도 알고 있어서 자기 아래로 오지 않으면 불로 태우겠다고 협박까지 합니다. 가시나무의 은사는 다른 나무들이 자랄 수 없는 광야를 지키는 것이고 땔감과 막대기로 그 쓰임을 다하는 것입니다. 자기 분수를 모르고 왕좌를 탐내는 가시나무의 모습은 왕이 될 만한 자질이나 능력도 없이 권력에 눈이 멀어 왕권을 차지한 아비멜렉을 풍자한 것입니다. 그런데 이 모든 문제의 원인은 애초에 나무들이 가시나무에게 왕이 되어 달라고 부탁한 데 있습니다. 악한 지도자는 악한 백성의 비틀린 욕망이 투영된 결과입니다. 하나님이 왕이심을 잊고 인간의 지도력과 체제와 기술만을 삶의 주인으로 삼는다면, 우리도 결국 가시 그늘 아래서 그 대가를 치르게 될 것입니다.<br><div class="verse-point">📍 16-20절</div>요담은 하나님의 명예를 위해서가 아니라 아버지 기드온의 명예를 위해 싸우고 있습니다. 그는 기드온이 세겜을 구원했다고 말하지만, 사실 세겜을 구원한 이는 하나님입니다. 요담은 자기 가족이 은혜를 저버린 세겜 사람들에게 부당하게 대우받는다고 주장하지만, 사실 부당하게 대우받는 이는 하나님입니다. 아비멜렉과 세겜 사람들은 물론 온 이스라엘, 더 나아가 기드온과 요담 모두 유일한 구원자이자 왕이신 하나님을 잊었습니다. 이 허무한 진흙탕 싸움의 결말은 공멸일 것입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>저마다 왕이 되려고 아우성치는 세상에서 참된 왕이 누구인지 잊지 않게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>신앙의 자유가 없는 알제리에서 약 50명의 그리스도인이 불법 예배 혐의로 기소되어 있다. 이들이 속히 풀려나고 알제리 가정교회들이 날마다 하나님의 보호를 경험하도록</div>
+    </section>
+
+    <!-- 2. 영문 매일성경 패널 -->
+    <section id="panel-bi" style="display: none;">
+        <h1>📖 Today's QT: Jotham’s Parable and Curse</h1>
+        <div class="title-divider"></div>
+        <blockquote>
+            <strong>Date :</strong> 2026-09-20<br>
+            <strong>Passage :</strong> 사사기(Judges) 9:7 - 9:21
+        </blockquote>
+        <div class="section-header">📜 Scripture (NIV)</div>
+        <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">When it was told to Jotham, he went and stood on top of Mount Gerizim and cried aloud and said to them, "Listen to me, you leaders of Shechem, that God may listen to you.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">The trees once went out to anoint a king over them, and they said to the olive tree, 'Reign over us.'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But the olive tree said to them, 'Shall I leave my abundance, by which gods and men are honored, and go hold sway over the trees?'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the trees said to the fig tree, 'You come and reign over us.'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But the fig tree said to them, 'Shall I leave my sweetness and my good fruit and go hold sway over the trees?'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the trees said to the vine, 'You come and reign over us.'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But the vine said to them, 'Shall I leave my wine that cheers God and men and go hold sway over the trees?'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then all the trees said to the bramble, 'You come and reign over us.'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the bramble said to the trees, 'If in good faith you are anointing me king over you, then come and take refuge in my shade, but if not, let fire come out of the bramble and devour the cedars of Lebanon.'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">"Now therefore, if you acted in good faith and integrity when you made Abimelech king, and if you have dealt well with Jerubbaal and his house and have done to him as his deeds deserved--</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">for my father fought for you and risked his life and delivered you from the hand of Midian,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and you have risen up against my father's house this day and have killed his sons, seventy men on one stone, and have made Abimelech, the son of his female servant, king over the leaders of Shechem, because he is your relative--</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">if you then have acted in good faith and integrity with Jerubbaal and with his house this day, then rejoice in Abimelech, and let him also rejoice in you.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But if not, let fire come out from Abimelech and devour the leaders of Shechem and Beth-millo; and let fire come out from the leaders of Shechem and from Beth-millo and devour Abimelech."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Jotham ran away and fled and went to Beer and lived there, because of Abimelech his brother.</div></div></div></div>
+        <hr>
+        <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Jotham, the only son of Gideon who survived, went up Mount Gerizim and proclaimed a curse upon the people of Shechem. Through the parable of a tree, he argued that Abimelech was not fit to be a king but was like a bramble that pierced and harmed people. Jotham accused the people of Shechem of repaying Gideon’s grace with evil by appointing Abimelech as king. By helping Abimelech, they had participated in killing the 70 sons of Gideon. Jotham cursed Abimelech and the people of Shechem to become a fire that consumed one another.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 7-15</div>Jotham’s parable reminds us of the calling of God’s people. The olive tree, fig tree, and the vine each use their fruit to benefit God and others.  But the bramble oppresses people with its thorns. The money, abilities and positions we possess are not means for us to rise above others. God gave them to us to serve others.<br><div class="verse-point">📍 VV. 16-21</div>If we abandon the truth and righteousness for our selfish desires, we will pay the price. The people of Shechem supported Abimelech and made him king for their own gain. However, Jotham said that the people of Shechem and Abimelech would all be destroyed. We must pursue righteousness and truth rather than trying to satisfy our greed.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me to live in a truthful and righteous manner, bringing joy to others and glorifying you.</div>
+    </section>
+
+    <!-- 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <!-- 한글 개역개정 텍스트 렌더링 영역 -->
+            <div id="modalTextBody" class="modal-body" style="display:none;"></div>
+            <!-- 영문 NIV iframe 영역 -->
+            <div id="modalFrameBody" class="modal-body" style="display:none; padding:0; height:380px;">
+                <iframe id="bibleFrame" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        // 사전 크롤링된 개역개정 성경 텍스트 캐시
+        const BIBLE_CACHE = {};
+
+        function switchTab(type) {
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .verse-point, .pray-item, .content-area, p, div, span');
+            if (dir === 0) { currentSize = 16; } else { currentSize += dir * 1; }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+            elms.forEach(function(el) { el.style.fontSize = currentSize + 'px'; });
+        }
+
+        // 한글 개역개정 모달 (초고속 텍스트 렌더링)
+        function openKorModal(bookCode, vCode, label) {
+            document.getElementById('modalTitle').innerText = label + " (개역개정)";
+            const textBody = document.getElementById('modalTextBody');
+            const frameBody = document.getElementById('modalFrameBody');
+            
+            frameBody.style.display = 'none';
+            textBody.style.display = 'block';
+            textBody.innerHTML = '';
+
+            let c = vCode;
+            let startV = null;
+            let endV = null;
+
+            if (vCode.includes(':')) {
+                const parts = vCode.split(':');
+                c = parts[0];
+                const vParts = parts[1].split('-');
+                startV = parseInt(vParts[0]);
+                endV = vParts.length > 1 ? parseInt(vParts[1]) : startV;
+            } else if (vCode.includes('-')) {
+                c = vCode.split('-')[0];
+            }
+
+            const cacheKey = bookCode + '_' + parseInt(c);
+            const chapterData = BIBLE_CACHE[cacheKey];
+
+            if (chapterData && Object.keys(chapterData).length > 0) {
+                let html = '';
+                const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                for (let v of sortedKeys) {
+                    if (startV !== null && (v < startV || v > endV)) continue;
+                    html += '<div class="modal-verse-row">';
+                    html += '<b class="modal-v-badge">' + v + '절</b>';
+                    html += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                    html += '</div>';
+                }
+                textBody.innerHTML = html;
+            } else {
+                textBody.innerHTML = '<p style="color:#8b949e; text-align:center; padding-top:40px;">해당 장의 개역개정 구절을 불러올 수 없습니다.<br>(' + label + ')</p>';
+            }
+
+            document.getElementById('bibleModal').style.display = 'block';
+            textBody.scrollTop = 0;
+        }
+
+        // 영문 NIV 모달 (기존 iframe 유지)
+        function openEngModal(url, label) {
+            document.getElementById('modalTitle').innerText = label + " (NIV)";
+            const textBody = document.getElementById('modalTextBody');
+            const frameBody = document.getElementById('modalFrameBody');
+            
+            textBody.style.display = 'none';
+            frameBody.style.display = 'block';
+            document.getElementById('bibleFrame').src = url;
+            document.getElementById('bibleModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+            document.getElementById('bibleFrame').src = '';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
