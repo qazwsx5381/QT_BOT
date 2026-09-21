@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 악인끼리의 악한 최후</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        .top-bar { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; color: #24292f; }
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 12% auto; width: 90%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { height: 380px; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        #bibleFrame { width: 100%; height: 100%; border: none; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-verse-row { display: flex; margin-bottom: 12px; }
+        .modal-v-badge { min-width: 45px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.9); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button onclick="changeFontSize(-1)">A-</button>
+            <button onclick="changeFontSize(0)">기본</button>
+            <button onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <!-- 1. 한글 매일성경 패널 -->
+    <section id="panel-kr" style="display: block;">
+        <h1>📖 오늘의 QT: 악인끼리의 악한 최후</h1>
+        <div class="title-divider"></div>
+        <blockquote>
+            <strong>날짜 :</strong> 2026-09-22<br>
+            <strong>본문 :</strong> 사사기(Judges) 9:46 - 9:57
+        </blockquote>
+        <div class="section-header">📜 성경 본문 (개역개정)</div>
+        <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">46절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">세겜 망대의 모든 사람들이 이를 듣고 엘브릿 신전의 보루로 들어갔더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">47절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">세겜 망대의 모든 사람들이 모인 것이 아비멜렉에게 알려지매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">48절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아비멜렉 및 그와 함께 있는 모든 백성이 살몬 산에 오르고 아비멜렉이 손에 도끼를 들고 나뭇가지를 찍어 그것을 들어올려 자기 어깨에 메고 그와 함께 있는 백성에게 이르되 너희는 내가 행하는 것을 보나니 빨리 나와 같이 행하라 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">49절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">모든 백성들도 각각 나뭇가지를 찍어서 아비멜렉을 따라 보루 위에 놓고 그것들이 얹혀 있는 보루에 불을 놓으매 세겜 망대에 있는 사람들이 다 죽었으니 남녀가 약 천 명이었더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">50절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아비멜렉이 데베스에 가서 데베스에 맞서 진 치고 그것을 점령하였더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">51절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">성읍 중에 견고한 망대가 있으므로 그 성읍 백성의 남녀가 모두 그리로 도망하여 들어가서 문을 잠그고 망대 꼭대기로 올라간지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">52절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아비멜렉이 망대 앞에 이르러 공격하며 망대의 문에 가까이 나아가서 그것을 불사르려 하더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">53절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">한 여인이 맷돌 위짝을 아비멜렉의 머리 위에 내려 던져 그의 두개골을 깨뜨리니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">54절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아비멜렉이 자기의 무기를 든 청년을 급히 불러 그에게 이르되 너는 칼을 빼어 나를 죽이라 사람들이 나를 가리켜 이르기를 여자가 그를 죽였다 할까 하노라 하니 그 청년이 그를 찌르매 그가 죽은지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">55절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 사람들이 아비멜렉이 죽은 것을 보고 각각 자기 처소로 떠나갔더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">56절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아비멜렉이 그의 형제 칠십 명을 죽여 자기 아버지에게 행한 악행을 하나님이 이같이 갚으셨고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">57절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">또 세겜 사람들의 모든 악행을 하나님이 그들의 머리에 갚으셨으니 여룹바알의 아들 요담의 저주가 그들에게 응하니라</div></div></div></div>
+        <hr>
+        <div class="content-area">요담의 예언대로(<span class="bible-link" onclick="openKorModal('jdg', '15', '사사기 15장')">15</span>, <span class="bible-link" onclick="openKorModal('jdg', '20', '사사기 20')"><br><div class="verse-point">📍 20절</div></span>) 아비멜렉에게서 나온 불로 세겜 사람들이 불타 죽고, 아비멜렉 역시 한 여성이 던진 맷돌에 맞아 힘없이 죽고 맙니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 56-57절</div>세겜 사람들은 아비멜렉에 의해 살육당하고 아비멜렉은 데베스 여인이 던진 맷돌에 맞아 죽게 하심으로, 악인들이 행한 대로 갚아 주십니다. 겉보기에는 자기들끼리 분열하여 망한 것 같지만, 하나님이 악한 자의 교만을 이용하셔서 악한 자를 빠짐없이 심판하신 것입니다. 오늘날의 이 불의한 세상도 하나님이 그냥 내버려두시는 것 같지만, 사실은 모든 일의 배후에서 공의로 다스리고 계십니다. 바람에 날리는 겨와 같은 악인의 최후를 바라보며, 오늘 여기서부터 의를 행합시다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 46절</div>세겜이 멸망했다는 소식을 들은 ‘세겜 망대’ 사람들은 ‘엘브릿(언약의 신) 신전의 보루’로 숨어들었습니다. 그러나 그럴듯한 신앙의 용어로 치장하면서 세상이 좇는 우상을 똑같이 뒤따르는 혼합주의 신앙에 하나님은 결코 속지 않으십니다. 세겜 망대 사람들이 피한 곳을 보십시오. 그들은 피난처이신 하나님께 돌이키기보다 우상 신전의 보루(은밀한 내실)에 숨습니다. 지금 내가 의지하고 있는 마지막 보루는 무엇입니까?<br><div class="verse-point">📍 47-49절</div>이스라엘의 사사였던 기드온은 백성을 구하기 위해 불을 사용했는데(<span class="bible-link" onclick="openKorModal('jdg', '7:20', '사사기 7장 20절')">7:20</span>), 이스라엘의 왕임을 자처하는 아비멜렉은 백성을 살육하기 위해 불을 사용합니다. 요담의 말 그대로(<span class="bible-link" onclick="openKorModal('jdg', '9:20', '사사기 9장 20절')">9:20</span>) 아비멜렉에게서 불이 나와 세겜 사람들을 살랐습니다. 하지만 이 불이 끝은 아닙니다. 아비멜렉도 심판의 불을 피할 수 없을 것입니다. 히브리어로 ‘여인’(히. 잇샤)과 ‘불’(히. 엣쉬)의 발음이 비슷한데, 이는 아비멜렉을 삼킬 심판의 불이 한 여인(<span class="bible-link" onclick="openKorModal('jdg', '53', '사사기 53')"><br><div class="verse-point">📍 53절</div></span>)임을 암시합니다.<br><div class="verse-point">📍 50-55절</div>세겜을 완전히 파멸시킨 아비멜렉은 여세를 몰아 데베스를 점령하고 망대에 숨은 자들을 소탕하려다가 허망하게 최후를 맞습니다. 살인에 살인을 거듭하는 악인의 광기가 이름 모를 한 여인이 던진 돌에 맞아 멈추게 된 것입니다. 아비멜렉은 여인의 손에 죽는 수모만은 피하려고 병기를 든 소년에게 자신의 최후를 맡겼지만, 성경은 그가 여인의 손에 죽었다는 사실을 명시합니다(<span class="bible-link" onclick="openKorModal('2sa', '11:21', '사무엘하 11장 21절')">참조. 삼하 11:21</span>). 악인의 짧은 형통은 비참하고 수치스러운 결말로 끝날 것입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>아직도 제 힘만 믿고 날뛰는 모든 악한 세력의 무릎을 하나님 앞에 꿇게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>4년째 접어든 수단 내전이 종식될 기미가 보이지 않는다. 국제 사회가 내전으로 고통받고 있는 이들의 아픔을 함께 나누면서 전쟁 중단을 위해 적극적으로 노력하도록</div>
+    </section>
+
+    <!-- 2. 영문 매일성경 패널 -->
+    <section id="panel-bi" style="display: none;">
+        <h1>📖 Today's QT: End of Vengeance</h1>
+        <div class="title-divider"></div>
+        <blockquote>
+            <strong>Date :</strong> 2026-09-22<br>
+            <strong>Passage :</strong> 사사기(Judges) 9:46 - 9:57
+        </blockquote>
+        <div class="section-header">📜 Scripture (NIV)</div>
+        <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.46</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">When all the leaders of the Tower of Shechem heard of it, they entered the stronghold of the house of El-berith.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.47</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Abimelech was told that all the leaders of the Tower of Shechem were gathered together.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.48</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Abimelech went up to Mount Zalmon, he and all the people who were with him. And Abimelech took an axe in his hand and cut down a bundle of brushwood and took it up and laid it on his shoulder. And he said to the men who were with him, "What you have seen me do, hurry and do as I have done."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.49</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So every one of the people cut down his bundle and following Abimelech put it against the stronghold, and they set the stronghold on fire over them, so that all the people of the Tower of Shechem also died, about 1,000 men and women.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.50</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then Abimelech went to Thebez and encamped against Thebez and captured it.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.51</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But there was a strong tower within the city, and all the men and women and all the leaders of the city fled to it and shut themselves in, and they went up to the roof of the tower.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.52</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Abimelech came to the tower and fought against it and drew near to the door of the tower to burn it with fire.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.53</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And a certain woman threw an upper millstone on Abimelech's head and crushed his skull.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.54</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then he called quickly to the young man his armor-bearer and said to him, "Draw your sword and kill me, lest they say of me, 'A woman killed him.'" And his young man thrust him through, and he died.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.55</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And when the men of Israel saw that Abimelech was dead, everyone departed to his home.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.56</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Thus God returned the evil of Abimelech, which he committed against his father in killing his seventy brothers.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.57</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And God also made all the evil of the men of Shechem return on their heads, and upon them came the curse of Jotham the son of Jerubbaal.</div></div></div></div>
+        <hr>
+        <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>The leaders of Shechem hid from Abimelech in an underground chamber of the temple of El-berith, but Abimelech set fire to the entrance, killing about a thousand people. Filled with a thirst for revenge and greed, he did not stop at destroying Shechem but went to Thebez and even started a war there. The people of Thebez fled to the top of a tower, and Abimelech tried to burn it down. However, he was struck and injured by a millstone thrown down by a woman, and he died by the sword of a servant. The Book of Judges records this as God repaying Abimelech and Shechem for their evil.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 56-57</div>God judges the evil deeds of the wicked and avenges those who suffer unjustly. God made Abimelech and the people of Shechem pay for their evil in accordance with Jotham’s curse. God remembers those who have been stripped of their lives or livelihoods by corrupt powers. But no unrighteous force enjoys eternal power under God’s rule.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 50-55</div>Corrupt power and cruel violence lead to a tragic and shameful fate. Abimelech tried to burn even the tower at Thebez, but he was struck down by a millstone thrown by a woman. He tried to protect his legacy until the end, but he was recorded in history as suffering a disgraceful death. Let’s not envy the success and power of the wicked. The fate of tyrannical power is sudden destruction.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, please destroy the evil powers that oppose you and harass people by violence and force.</div>
+    </section>
+
+    <!-- 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <!-- 한글 개역개정 텍스트 렌더링 영역 -->
+            <div id="modalTextBody" class="modal-body" style="display:none;"></div>
+            <!-- 영문 NIV iframe 영역 -->
+            <div id="modalFrameBody" class="modal-body" style="display:none; padding:0; height:380px;">
+                <iframe id="bibleFrame" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        // 사전 크롤링된 개역개정 성경 텍스트 캐시
+        const BIBLE_CACHE = {"jdg_15": {}, "jdg_20": {}, "jdg_7": {}, "jdg_9": {}, "jdg_53": {}, "2sa_11": {}};
+
+        function switchTab(type) {
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .verse-point, .pray-item, .content-area, p, div, span');
+            if (dir === 0) { currentSize = 16; } else { currentSize += dir * 1; }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+            elms.forEach(function(el) { el.style.fontSize = currentSize + 'px'; });
+        }
+
+        // 한글 개역개정 모달 (초고속 텍스트 렌더링)
+        function openKorModal(bookCode, vCode, label) {
+            document.getElementById('modalTitle').innerText = label + " (개역개정)";
+            const textBody = document.getElementById('modalTextBody');
+            const frameBody = document.getElementById('modalFrameBody');
+            
+            frameBody.style.display = 'none';
+            textBody.style.display = 'block';
+            textBody.innerHTML = '';
+
+            let c = vCode;
+            let startV = null;
+            let endV = null;
+
+            if (vCode.includes(':')) {
+                const parts = vCode.split(':');
+                c = parts[0];
+                const vParts = parts[1].split('-');
+                startV = parseInt(vParts[0]);
+                endV = vParts.length > 1 ? parseInt(vParts[1]) : startV;
+            } else if (vCode.includes('-')) {
+                c = vCode.split('-')[0];
+            }
+
+            const cacheKey = bookCode + '_' + parseInt(c);
+            const chapterData = BIBLE_CACHE[cacheKey];
+
+            if (chapterData && Object.keys(chapterData).length > 0) {
+                let html = '';
+                const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                for (let v of sortedKeys) {
+                    if (startV !== null && (v < startV || v > endV)) continue;
+                    html += '<div class="modal-verse-row">';
+                    html += '<b class="modal-v-badge">' + v + '절</b>';
+                    html += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                    html += '</div>';
+                }
+                textBody.innerHTML = html;
+            } else {
+                textBody.innerHTML = '<p style="color:#8b949e; text-align:center; padding-top:40px;">해당 장의 개역개정 구절을 불러올 수 없습니다.<br>(' + label + ')</p>';
+            }
+
+            document.getElementById('bibleModal').style.display = 'block';
+            textBody.scrollTop = 0;
+        }
+
+        // 영문 NIV 모달 (기존 iframe 유지)
+        function openEngModal(url, label) {
+            document.getElementById('modalTitle').innerText = label + " (NIV)";
+            const textBody = document.getElementById('modalTextBody');
+            const frameBody = document.getElementById('modalFrameBody');
+            
+            textBody.style.display = 'none';
+            frameBody.style.display = 'block';
+            document.getElementById('bibleFrame').src = url;
+            document.getElementById('bibleModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+            document.getElementById('bibleFrame').src = '';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
