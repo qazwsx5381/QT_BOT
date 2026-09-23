@@ -8,20 +8,14 @@
         :root { color-scheme: light dark; }
         body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
         
-        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; flex-direction: column; gap: 8px; padding: 10px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
-        .nav-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
         .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
         .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
         .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
         
         .font-control { display: flex; gap: 4px; }
-        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
         
-        .date-control { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #57606a; }
-        .date-input { border: 1px solid #d0d7de; border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 600; background: #f6f8fa; color: #24292f; outline: none; cursor: pointer; }
-        .date-nav-btn { border: 1px solid #d0d7de; background: #f6f8fa; border-radius: 6px; padding: 3px 8px; font-size: 11px; cursor: pointer; font-weight: 700; color: #24292f; }
-
         h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
         .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
         blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
@@ -47,16 +41,13 @@
         .content-area { word-break: keep-all; margin: 20px 0; }
         hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
 
-        #dateViewerContainer { display: none; width: 100%; height: 80vh; border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-top: 10px; }
-
         @media (prefers-color-scheme: dark) {
             body { background-color: #0d1117; color: #c9d1d9; }
             .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
             .tab-group { background: #21262d; }
             .tab-btn { color: #8b949e; }
             .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
-            .font-control button, .date-input, .date-nav-btn { background: #21262d; border-color: #30363d; color: #c9d1d9; }
-            .date-control { color: #8b949e; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
             .title-divider { background-color: #30363d; }
             blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
             .modal-content { background-color: #161b22; color: #c9d1d9; }
@@ -75,29 +66,19 @@
 </head>
 <body>
     <header class="top-bar">
-        <div class="nav-row">
-            <div class="tab-group">
-                <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
-                <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
-            </div>
-            <div class="font-control">
-                <button type="button" onclick="changeFontSize(-1)">A-</button>
-                <button type="button" onclick="changeFontSize(0)">기본</button>
-                <button type="button" onclick="changeFontSize(1)">A+</button>
-            </div>
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
         </div>
-        <div class="nav-row" style="justify-content: flex-end;">
-            <div class="date-control">
-                <button type="button" class="date-nav-btn" onclick="shiftDate(-1)">◀ 전날</button>
-                <input type="date" id="datePicker" class="date-input" value="2026-09-23" onchange="loadDateContent(this.value)">
-                <button type="button" class="date-nav-btn" onclick="shiftDate(1)">다음날 ▶</button>
-            </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
         </div>
     </header>
 
-    <iframe id="dateViewerContainer" src=""></iframe>
-
-    <div id="mainContentWrapper">
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
         <section id="panel-kr" style="display: block;">
             <h1>📖 오늘의 QT: 하나님을 잊게 만드는 평안</h1>
             <div class="title-divider"></div>
@@ -111,6 +92,7 @@
             <div class="content-area">아비멜렉 이후 사사 돌라와 야일이 통치하던 시대(총 45년)는 어느 정도 안정을 누리는 사회였지만, 이스라엘은 평화의 때에 더욱 악을 행하여 위기를 부릅니다<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 6-9절</div>   하나님을 버리고 우상을 섬기는 이스라엘 자손이 암몬 족속에게 18년 동안 학대받게 하십니다. 하나님 덕분에 평안을 누리는 이스라엘이 그 평안 때문에 하나님의 은혜를 잊고 온갖 종류의 우상을 섬겼기 때문입니다. 좀 살 만하면 죄를 짓고 또다시 악을 행하는 백성에게는 도리어 모든 것을 잃고 하나님만 남는 막다른 상황이 더 나을 수도 있습니다. 하나님이 우리에게 주고 싶어 하시는 궁극적인 복은 안온함이나 풍족함이 아니라, ‘하나님을 가까이하는 것’입니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;psa&quot;, &quot;verse&quot;: &quot;73:28&quot;, &quot;label&quot;: &quot;시편 73장 28절&quot;}]', '사사기 (시 73:28)', 'kr')">시 73:28</span>).<br><div class="verse-point">📍 10-14절</div>   이스라엘이 구원을 요청할 때마다 친히 구원의 손길을 내미셨으나, 지금은 그들을 구원하지 않겠다고 거절하십니다. 위기 때만 도와달라고 기도하는 백성의 기회주의적인 신앙을 책망하시며, 그들의 회개가 정말로 진실한지 돌아보기를 원하신 것입니다. 내 회개기도는 하나님이 받으실 만합니까?<br><div class="verse-point">📍 15-16절</div>   자기 백성이 처한 곤경을 오래도록 외면하지 못하십니다. 번번이 잘못을 뉘우쳤다가 또다시 죄를 범하는 백성이고 이번에도 도와주면 또 금방 배신할 백성이지만, 그들이 당하는 고통을 못 본 체하실 수 없으십니다. 하나님은 오늘 또다시 우리의 울부짖음을 들어주십니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 1-5절</div>   기드온 이후의 사사들에게는 본격적으로 결함이 나타나기 시작합니다. 돌라와 야일이 사사가 되는 과정은 “일어났다”로 묘사됩니다. 이전의 사사들에게 “세우셨다”(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;2:16&quot;, &quot;label&quot;: &quot;사사기 2장 16절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;2:18&quot;, &quot;label&quot;: &quot;사사기 2장 18절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;3:9&quot;, &quot;label&quot;: &quot;사사기 3장 9절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;3:15&quot;, &quot;label&quot;: &quot;사사기 3장 15절&quot;}]', '사사기 (2:16, 18; 3:9, 15)', 'kr')">2:16, 18; 3:9, 15</span>)라는 표현이 따라붙어 하나님의 주도성이 강조된 것과는 대조적입니다. 아비멜렉처럼 돌라와 야일이 스스로 권력을 장악한 상황을 암시하고 있습니다. 특히 야일이 아들 30명을 낳고 그 30명의 아들에게 30마리 나귀와 30개의 성읍을 주는 모습은, 그의 집안이 왕의 권력을 행사하고 있음을 보여 줍니다. 기드온이 왕처럼 70명의 아들을 두고, 아들 중 아비멜렉이 제멋대로 그 권력을 물려받아 왕으로 행세한 것과 유사한 모습입니다. 내 소망은 ‘일어남’과 ‘세워짐’ 중 어디에 가깝습니까? 내 세속적 욕망을 ‘하나님께 쓰임받는다’라는 식의 그럴듯한 용어로 포장하고 있진 않습니까?<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>스스로 세우는 삶이 아니라, 하나님이 세우시는 섬김의 자리에 순종하는 삶이게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>에티오피아에서 여성 인권 활동가의 78%가 디지털 성폭력을 경험한 것으로 나타났다. 여성을 차별하고 무시하는 사회적 인식이 개선되고 이들을 보호하기 위한 조치가 마련되도록</div>
         </section>
 
+        <!-- 2. 영문 매일성경 패널 -->
         <section id="panel-bi" style="display: none;">
             <h1>📖 Today's QT: Era of Grace, History of Betrayal</h1>
             <div class="title-divider"></div>
@@ -141,41 +123,8 @@
     </footer>
 
     <script>
-        const ORIGINAL_DATE = "2026-09-23";
-        let activeDate = ORIGINAL_DATE;
         let currentTab = 'kr';
         const BIBLE_CACHE = {"kr": {"psa_73": {}, "jdgs_2": {}, "jdgs_3": {}}, "bi": {}};
-
-        function loadDateContent(selectedDate) {
-            if (!selectedDate) return;
-            activeDate = selectedDate;
-            const mainWrapper = document.getElementById('mainContentWrapper');
-            const viewerFrame = document.getElementById('dateViewerContainer');
-
-            if (selectedDate === ORIGINAL_DATE) {
-                viewerFrame.style.display = 'none';
-                viewerFrame.src = '';
-                mainWrapper.style.display = 'block';
-                switchTab(currentTab);
-            } else {
-                const qtType = (currentTab === 'bi') ? 'QT5' : 'QT1';
-                viewerFrame.src = "https://sum.su.or.kr:8888/bible/today?qt_ty=" + qtType + "&Base_de=" + selectedDate;
-                mainWrapper.style.display = 'none';
-                viewerFrame.style.display = 'block';
-            }
-            window.scrollTo(0, 0);
-        }
-
-        function shiftDate(days) {
-            const cur = new Date(activeDate);
-            cur.setDate(cur.getDate() + days);
-            const y = cur.getFullYear();
-            const m = String(cur.getMonth() + 1).padStart(2, '0');
-            const d = String(cur.getDate()).padStart(2, '0');
-            const nextDate = y + "-" + m + "-" + d;
-            document.getElementById('datePicker').value = nextDate;
-            loadDateContent(nextDate);
-        }
 
         function switchTab(type) {
             currentTab = type;
@@ -183,7 +132,6 @@
             const btnBi = document.getElementById('btn-bi');
             const panelKr = document.getElementById('panel-kr');
             const panelBi = document.getElementById('panel-bi');
-            const viewerFrame = document.getElementById('dateViewerContainer');
 
             if (type === 'kr') {
                 btnKr.classList.add('active');
@@ -195,11 +143,6 @@
                 btnKr.classList.remove('active');
                 panelKr.style.display = 'none';
                 panelBi.style.display = 'block';
-            }
-
-            if (activeDate !== ORIGINAL_DATE) {
-                const qtType = (type === 'bi') ? 'QT5' : 'QT1';
-                viewerFrame.src = "https://sum.su.or.kr:8888/bible/today?qt_ty=" + qtType + "&Base_de=" + activeDate;
             }
             window.scrollTo(0, 0);
         }
