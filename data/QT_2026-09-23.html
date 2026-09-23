@@ -163,6 +163,7 @@
             });
         }
 
+        // --- 통합 모달 렌더링 ---
         function openCombinedModal(itemsJson, headerTitle, lang) {
             let items = [];
             try {
@@ -184,29 +185,40 @@
                 let c = item.verse;
                 let startV = null;
                 let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
 
                 if (item.verse.includes(':')) {
                     const parts = item.verse.split(':');
                     c = parts[0];
                     const vParts = parts[1].split('-');
                     startV = parseInt(vParts[0]);
-                    endV = vParts.length > 1 ? parseInt(vParts[1]) : startV;
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
                 } else if (item.verse.includes('-')) {
                     c = item.verse.split('-')[0];
+                    isRange = true;
                 }
 
                 const cacheKey = item.book + '_' + parseInt(c);
                 const chapterData = cacheMap ? cacheMap[cacheKey] : null;
 
-                fullHtml += '<div class="modal-section-title">' + item.label + '</div>';
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
 
                 if (chapterData && Object.keys(chapterData).length > 0) {
                     const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
                     let found = false;
                     for (let v of sortedKeys) {
                         if (startV !== null && (v < startV || v > endV)) continue;
+                        
                         fullHtml += '<div class="modal-verse-row">';
-                        fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
                         fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
                         fullHtml += '</div>';
                         found = true;
