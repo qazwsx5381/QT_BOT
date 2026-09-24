@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 입다의 외교전</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 입다의 외교전</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-09-25<br>
+                <strong>본문 :</strong> 사사기(Judges) 11:12 - 11:28
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">입다가 암몬 자손의 왕에게 사자들을 보내 이르되 네가 나와 무슨 상관이 있기에 내 땅을 치러 내게 왔느냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">암몬 자손의 왕이 입다의 사자들에게 대답하되 이스라엘이 애굽에서 올라올 때에 아르논에서부터 얍복과 요단까지 내 땅을 점령했기 때문이니 이제 그것을 평화롭게 돌려 달라 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">입다가 암몬 자손의 왕에게 다시 사자들을 보내</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그에게 이르되 입다가 이같이 말하노라 이스라엘이 모압 땅과 암몬 자손의 땅을 점령하지 아니하였느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘이 애굽에서 올라올 때에 광야로 행하여 홍해에 이르고 가데스에 이르러서는</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘이 사자들을 에돔 왕에게 보내어 이르기를 청하건대 나를 네 땅 가운데로 지나게 하라 하였으나 에돔 왕이 이를 듣지 아니하였고 또 그와 같이 사람을 모압 왕에게도 보냈으나 그도 허락하지 아니하므로 이스라엘이 가데스에 머물렀더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 후에 광야를 지나 에돔 땅과 모압 땅을 돌아서 모압 땅의 해 뜨는 쪽으로 들어가 아르논 저쪽에 진 쳤고 아르논은 모압의 경계이므로 모압 지역 안에는 들어가지 아니하였으며</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘이 헤스본 왕 곧 아모리 족속의 왕 시혼에게 사자들을 보내어 그에게 이르되 청하건대 우리를 당신의 땅으로 지나 우리의 곳에 이르게 하라 하였으나</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">시혼이 이스라엘을 믿지 아니하여 그의 지역으로 지나지 못하게 할 뿐 아니라 그의 모든 백성을 모아 야하스에 진 치고 이스라엘을 치므로</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘의 하나님 여호와께서 시혼과 그의 모든 백성을 이스라엘의 손에 넘겨 주시매 이스라엘이 그들을 쳐서 그 땅 주민 아모리 족속의 온 땅을 점령하되</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">22절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아르논에서부터 얍복까지와 광야에서부터 요단까지 아모리 족속의 온 지역을 점령하였느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">23절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘의 하나님 여호와께서 이같이 아모리 족속을 자기 백성 이스라엘 앞에서 쫓아내셨거늘 네가 그 땅을 얻고자 하는 것이 옳으냐</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">24절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">네 신 그모스가 네게 주어 차지하게 한 것을 네가 차지하지 아니하겠느냐 우리 하나님 여호와께서 우리 앞에서 어떤 사람이든지 쫓아내시면 그것을 우리가 차지하리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">25절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이제 네가 모압 왕 십볼의 아들 발락보다 더 나은 것이 있느냐 그가 이스라엘과 더불어 다툰 일이 있었느냐 싸운 일이 있었느냐</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">26절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘이 헤스본과 그 마을들과 아로엘과 그 마을들과 아르논 강 가에 있는 모든 성읍에 거주한 지 삼백 년이거늘 그 동안에 너희가 어찌하여 도로 찾지 아니하였느냐</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">27절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 네게 죄를 짓지 아니하였거늘 네가 나를 쳐서 내게 악을 행하고자 하는도다 원하건대 심판하시는 여호와께서 오늘 이스라엘 자손과 암몬 자손 사이에 판결하시옵소서 하였으나</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">28절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">암몬 자손의 왕이 입다가 사람을 보내어 말한 것을 듣지 아니하였더라</div></div></div></div>
+            <hr>
+            <div class="content-area">암몬과의 전투에 앞서 입다가 암몬 왕과 벌인 외교전이 소개되고 있습니다. 입다의 설득력이 돋보이는 이 외교전은 백성을 전투에 참여시키는 정당성을 확보합니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 27절</div>   이 구절을 직역하면 “유일한 사사이신 여호와께서 사사로서 다스려 주십시오”입니다. 사사기는 약점 많은 인간 사사들의 이야기이지만, 그들의 부족함에도 불구하고 자신의 구원 계획을 막힘없이 이루어 가시는 하나님의 이야기이기도 합니다. 하나님은 내 약함이 보완된 후에 강함을 주시는 분이 아닙니다. 내가 약한 ‘그때’ 강하다 하시며 바로 그 순간 내게 ‘머무시는’ 분입니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;12:9-10&quot;, &quot;label&quot;: &quot;고린도후서 12장 9절 ~ 10절&quot;}]', '사사기 (고후 12:9-10)', 'kr')">고후 12:9-10</span>).<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 12-13절</div>   이스라엘을 공격한 암몬의 부당함을 지적하며 협상을 제안하는 입다에게, 암몬 왕은 오히려 이스라엘이 빼앗은 자기들의 땅을 돌려달라고 요구합니다. 하지만 이스라엘은 암몬 땅을 빼앗은 적이 없습니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;deu&quot;, &quot;verse&quot;: &quot;2:19-21&quot;, &quot;label&quot;: &quot;신명기 2장 19절 ~ 21절&quot;}]', '사사기 (신 2:19-21)', 'kr')">신 2:19-21</span>). 암몬 왕은 지금 잘못된 역사 이해로 길르앗 지역을 차지하려고 하는 것입니다.<br><div class="verse-point">📍 14-22절</div>   입다는 암몬 왕이 자기 땅이라고 주장하는 영토(아르논부터 얍복과 요단까지)가 이스라엘이 암몬에게서 빼앗은 땅이 아니라 아모리 왕 시혼에게서 빼앗은 땅이라는 것을 밝힙니다. 그러므로 암몬 자손이 자기들 땅이라고 주장할 근거가 없다는 것입니다. 과거 역사에 대한 정확한 이해를 통해 오늘날 공동체가 겪고 있는 어려움을 해결하는 지혜로운 모습입니다.<br><div class="verse-point">📍 23-28절</div>   입다는 이스라엘의 하나님이 친히 자기 백성에게 주신 땅을 암몬이 차지하려고 하는 것은 매우 부당한 일이라는 것을 명시합니다. 암몬 사람들도 그모스 신이 주는 땅을 차지하는 것을 자연스럽게 여기듯이 이스라엘 역시 이스라엘의 하나님이 아모리 사람을 쫓아내고 선물로 허락하신 땅에서 사는 것이 당연하다는 논리입니다. 또 이스라엘이 이미 300년 동안 잘 살고 있는 땅을 이제 와서 자기들의 땅이니 돌려달라고 하는 것은 현실적인 이치에도 맞지 않는다는 것을 분명히 합니다. 그리스도인의 영적 싸움도 대부분 ‘방어전’입니다. 세상은 하나님 나라의 가치관으로 사는 우리를 늘 넘어뜨리려고 합니다. 문제를 해결하고 세상을 상대하는 내 논리와 태도는 어떻습니까?<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>우리 공동체에 하나님의 공의가 넘쳐흐르길 기도하며, 모든 판단을 하나님께 맡깁니다.<br><div class="pray-item"><b>🔹 열방</b></div>우간다의 캄팔라에서 전도 집회를 마치고 귀가하던 키텡가(Alfred Kitenga) 전도사가 피살됐다. 우간다 교회가 그의 죽음을 기억하고 담대하게 복음의 증인으로 세워지도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Diplomatic Dispute with Ammon</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-09-25<br>
+                <strong>Passage :</strong> 사사기(Judges) 11:12 - 11:28
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then Jephthah sent messengers to the king of the Ammonites and said, "What do you have against me, that you have come to me to fight against my land?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the king of the Ammonites answered the messengers of Jephthah, "Because Israel on coming up from Egypt took away my land, from the Arnon to the Jabbok and to the Jordan; now therefore restore it peaceably."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Jephthah again sent messengers to the king of the Ammonites</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and said to him, "Thus says Jephthah: Israel did not take away the land of Moab or the land of the Ammonites,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">but when they came up from Egypt, Israel went through the wilderness to the Red Sea and came to Kadesh.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Israel then sent messengers to the king of Edom, saying, 'Please let us pass through your land,' but the king of Edom would not listen. And they sent also to the king of Moab, but he would not consent. So Israel remained at Kadesh.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">"Then they journeyed through the wilderness and went around the land of Edom and the land of Moab and arrived on the east side of the land of Moab and camped on the other side of the Arnon. But they did not enter the territory of Moab, for the Arnon was the boundary of Moab.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Israel then sent messengers to Sihon king of the Amorites, king of Heshbon, and Israel said to him, 'Please let us pass through your land to our country,'</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">but Sihon did not trust Israel to pass through his territory, so Sihon gathered all his people together and encamped at Jahaz and fought with Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the LORD, the God of Israel, gave Sihon and all his people into the hand of Israel, and they defeated them. So Israel took possession of all the land of the Amorites, who inhabited that country.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.22</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they took possession of all the territory of the Amorites from the Arnon to the Jabbok and from the wilderness to the Jordan.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.23</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So then the LORD, the God of Israel, dispossessed the Amorites from before his people Israel; and are you to take possession of them?</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.24</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Will you not possess what Chemosh your god gives you to possess? And all that the LORD our God has dispossessed before us, we will possess.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.25</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Now are you any better than Balak the son of Zippor, king of Moab? Did he ever contend against Israel, or did he ever go to war with them?</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.26</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">While Israel lived in Heshbon and its villages, and in Aroer and its villages, and in all the cities that are on the banks of the Arnon, 300 years, why did you not deliver them within that time?</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.27</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">I therefore have not sinned against you, and you do me wrong by making war on me. The LORD, the Judge, decide this day between the people of Israel and the people of Ammon."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.28</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But the king of the Ammonites did not listen to the words of Jephthah that he sent to him.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Jephthah sent messengers to the king of the Ammonites to ask why he had invaded. The king of the Ammonites demanded that Israel return the land they had taken from him. Jephthah responded by explaining the history, asserting that Israel had not taken the land lawlessly but had received it from God. Jephthah emphasised that Israel had dwelled in that land for 300 years, and even Balak, king of Moab, did not demand it back. Then, he declared that the Lord would judge who the land rightfully belonged to.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 27</div>God is a righteous judge who judges between good and evil. So, Jephthah responded to the king of Ammon’s unreasonable invasion and demands by requesting God to judge who was in the right. When we face a conflict that we cannot solve on our own, the wise thing to do is to seek God’s righteous judgement.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 27-28</div>Jephthah first established the justness of Israel’s cause. Since they were fighting to defend themselves rather than acting out of aggression, he was able to move forward with the faith that the Lord would stand with those who were in the right. Likewise, we should also seek the Lord’s approval before we act. If our pursuit aligns with the Lord’s will, let’s devote ourselves wholeheartedly.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, give us the knowledge and wisdom to overcome the threats of the world that shake our faith and stifle our actions.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"2cor_12": {}, "deu_2": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
