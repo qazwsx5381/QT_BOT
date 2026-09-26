@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 입다의 부주의한 서원</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 입다의 부주의한 서원</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-09-26<br>
+                <strong>본문 :</strong> 사사기(Judges) 11:29 - 11:40
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">29절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 여호와의 영이 입다에게 임하시니 입다가 길르앗과 므낫세를 지나서 길르앗의 미스베에 이르고 길르앗의 미스베에서부터 암몬 자손에게로 나아갈 때에</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">30절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 여호와께 서원하여 이르되 주께서 과연 암몬 자손을 내 손에 넘겨 주시면</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">31절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 암몬 자손에게서 평안히 돌아올 때에 누구든지 내 집 문에서 나와서 나를 영접하는 그는 여호와께 돌릴 것이니 내가 그를 번제물로 드리겠나이다 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">32절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 입다가 암몬 자손에게 이르러 그들과 싸우더니 여호와께서 그들을 그의 손에 넘겨 주시매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">33절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">아로엘에서부터 민닛에 이르기까지 이십 성읍을 치고 또 아벨 그라밈까지 매우 크게 무찌르니 이에 암몬 자손이 이스라엘 자손 앞에 항복하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">34절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">입다가 미스바에 있는 자기 집에 이를 때에 보라 그의 딸이 소고를 잡고 춤추며 나와서 영접하니 이는 그의 무남독녀라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">35절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">입다가 이를 보고 자기 옷을 찢으며 이르되 어찌할꼬 내 딸이여 너는 나를 참담하게 하는 자요 너는 나를 괴롭게 하는 자 중의 하나로다 내가 여호와를 향하여 입을 열었으니 능히 돌이키지 못하리로다 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">36절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">딸이 그에게 이르되 나의 아버지여 아버지께서 여호와를 향하여 입을 여셨으니 아버지의 입에서 낸 말씀대로 내게 행하소서 이는 여호와께서 아버지를 위하여 아버지의 대적 암몬 자손에게 원수를 갚으셨음이니이다 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">37절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">또 그의 아버지에게 이르되 이 일만 내게 허락하사 나를 두 달만 버려 두소서 내가 내 여자 친구들과 산에 가서 나의 처녀로 죽음을 인하여 애곡하겠나이다 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">38절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 이르되 가라 하고 두 달을 기한하고 그를 보내니 그가 그 여자 친구들과 가서 산 위에서 처녀로 죽음을 인하여 애곡하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">39절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">두 달 만에 그의 아버지에게로 돌아온지라 그는 자기가 서원한 대로 딸에게 행하니 딸이 남자를 알지 못하였더라 이것이 이스라엘에 관습이 되어</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">40절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘의 딸들이 해마다 가서 길르앗 사람 입다의 딸을 위하여 나흘씩 애곡하더라</div></div></div></div>
+            <hr>
+            <div class="content-area">믿음의 사람으로 칭송받는 입다가(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;heb&quot;, &quot;verse&quot;: &quot;11:32-34&quot;, &quot;label&quot;: &quot;히브리서 11장 32절 ~ 34절&quot;}]', '사사기 (히 11:32-34)', 'kr')">히 11:32-34</span>), 가나안 종교의 풍습인 인신제사에 물들어 있을 만큼 사사 시대가 타락했음을 보여 주는 내용입니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>29, 32-33절   기드온과 그 이전의 사사들과 달리, 하나님은 입다가 등장할 때 개입하지 않으셨습니다. 입다는 하나님께 ‘세움받은’ 사사가 아닌, 돌라와 야일처럼(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;10:1-5&quot;, &quot;label&quot;: &quot;사사기 10장 1절 ~ 5절&quot;}]', '사사기 (10:1-5)', 'kr')">10:1-5</span>) 스스로 ‘일어난’ 사사에 가까웠습니다. 하지만 길르앗 장로들과 협상하고 암몬 왕과 협상한 후, 그제야 여호와의 영이 입다에게 임합니다. ‘여호와’의 이름까지 이용하는(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;11:9&quot;, &quot;label&quot;: &quot;사사기 11장 9절&quot;}]', '사사기 (11:9)', 'kr')">11:9</span>) 입다의 삐뚤어진 야망에도 불구하고, 이스라엘을 구원하기 위해 그를 사사로 추인해 주신 것입니다. 다시는 구원해 주지 않겠다고 하셨지만, 자비로우신 하나님은 자기 백성이 당하는 곤경을 보고만 계실 수 없었습니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;10:16&quot;, &quot;label&quot;: &quot;사사기 10장 16절&quot;}]', '사사기 (10:16)', 'kr')">10:16</span>). 이제 하나님의 영이 임하셨기에 전쟁의 결과는 승리뿐입니다. 하나님이 오늘 우리에게도 이 성령을 부어 주시길 간절히 바랍시다.<br><div class="verse-point">📍 30-31절</div>   주권적으로 임재하시는 분으로, 결코 흥정의 대상이 아니십니다. 입다는 여호와의 영이 임한 것만으로 만족하거나 확신하지 못합니다. 그래서 전투를 목전에 두고 하나님과도 협상을 벌이려 합니다. 하나님이 이기게 해 주시면, 돌아올 때 자신을 처음으로 맞이하는 사람을 번제물로 드리겠다고 맹세합니다. 하나님은 사람을 제물로 받으시는 분이 아닌데, 입다는 그모스 우상을 숭배하는 방식으로(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2ki&quot;, &quot;verse&quot;: &quot;3:27&quot;, &quot;label&quot;: &quot;열왕기하 3장 27절&quot;}]', '사사기 (왕하 3:27)', 'kr')">왕하 3:27</span>) 하나님을 조종하려 합니다. 승리의 징표로 값없이 성령을 부어 주신 하나님을 모욕하고, 은혜가 아닌 거래를 통해서 자기 욕망과 신앙적 권위를 획득하려는 모습입니다. 내 목적을 이루기 위해 하나님을 거래의 대상으로 여기며 신앙생활하고 있지는 않은지 돌아봅시다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 34-40절</div>   개선가를 부르며 돌아오는 입다가 제일 먼저 자신을 영접한 외동딸을 번제로 바쳐야 할 비극을 맞게 되었습니다. 하나님은 인신제사를 역겨워하시는 분이고(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;deu&quot;, &quot;verse&quot;: &quot;12:30-31&quot;, &quot;label&quot;: &quot;신명기 12장 30절 ~ 31절&quot;}]', '사사기 (신 12:30-31)', 'kr')">신 12:30-31</span>), 잘못된 서원은 회개하여 철회해야 맞지만(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;lev&quot;, &quot;verse&quot;: &quot;27:8&quot;, &quot;label&quot;: &quot;레위기 27장 8절&quot;}, {&quot;book&quot;: &quot;num&quot;, &quot;verse&quot;: &quot;30:5-16&quot;, &quot;label&quot;: &quot;민수기 30장 5절 ~ 16절&quot;}]', '사사기 (레 27:8; 민 30:5-16)', 'kr')">레 27:8; 민 30:5-16</span>), 입다는 그렇게 하지 않습니다. 율법에 무지하거나, 딸의 목숨보다 백성 앞에서의 자기 권위와 자존심을 중요시했기 때문입니다. 협상의 달인이자 달변가인 입다가 한 말이라고는 “가라”가 전부입니다. 우리는 잘못을 깨달았을 때 어떻게 행동합니까?<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>하나님의 거룩을 훼손하는 맹세와 서원을 하지 않도록 순전한 믿음을 주소서.<br><div class="pray-item"><b>🔹 열방</b></div>카메룬의 전통 사회에서 죽음과 장례는 공동체의 질서와 도덕을 유지하는 중요한 역할을 한다. 선교사들이 이러한 문화적 배경을 이해하고 생명과 소망의 복음을 지혜롭게 심도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Wrongful Vow</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-09-26<br>
+                <strong>Passage :</strong> 사사기(Judges) 11:29 - 11:40
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.29</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the Spirit of the LORD was upon Jephthah, and he passed through Gilead and Manasseh and passed on to Mizpah of Gilead, and from Mizpah of Gilead he passed on to the Ammonites.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.30</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Jephthah made a vow to the LORD and said, "If you will give the Ammonites into my hand,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.31</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">then whatever comes out from the doors of my house to meet me when I return in peace from the Ammonites shall be the LORD's, and I will offer it up for a burnt offering."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.32</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So Jephthah crossed over to the Ammonites to fight against them, and the LORD gave them into his hand.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.33</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he struck them from Aroer to the neighborhood of Minnith, twenty cities, and as far as Abel-keramim, with a great blow. So the Ammonites were subdued before the people of Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.34</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then Jephthah came to his home at Mizpah. And behold, his daughter came out to meet him with tambourines and with dances. She was his only child; besides her he had neither son nor daughter.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.35</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And as soon as he saw her, he tore his clothes and said, "Alas, my daughter! You have brought me very low, and you have become the cause of great trouble to me. For I have opened my mouth to the LORD, and I cannot take back my vow."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.36</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And she said to him, "My father, you have opened your mouth to the LORD; do to me according to what has gone out of your mouth, now that the LORD has avenged you on your enemies, on the Ammonites."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.37</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So she said to her father, "Let this thing be done for me: leave me alone two months, that I may go up and down on the mountains and weep for my virginity, I and my companions."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.38</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So he said, "Go." Then he sent her away for two months, and she departed, she and her companions, and wept for her virginity on the mountains.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.39</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And at the end of two months, she returned to her father, who did with her according to his vow that he had made. She had never known a man, and it became a custom in Israel</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.40</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">that the daughters of Israel went year by year to lament the daughter of Jephthah the Gileadite four days in the year.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Jephthah spoke of the Lord’s deliverance in the war against the Ammonites, but he was not fully assured of the outcome. So, he recklessly vowed to offer the first person to greet him after the war as a burnt offering if God gave them victory. God granted Jephthah a great victory, but because of his vow, he ended up losing his beloved only daughter. Despite his distress, he claimed that he could not go back on his vow. His daughter accepted his vow and requested a period of two months to mourn. In the end, Jephthah upheld his vow, and it became a custom in Israel for the daughters of Israel to lament his daughter.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 29, 32-33</div>God saves us and gives us victory. Israel did not gain victory because of Jephthah’s ability to negotiate or the power of their army, but because God filled Jephthah with his Spirit and gave Ammon into his hands. When we confront wicked forces and sin, we should fight with faith that “the battle is the Lord’s”.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 35-39</div>Jephthah lamented that he could not take back his vow, but a wrongful vow could be annulled (see Lev. 27:8; Num. 30:1-16). Above all, God does not accept people as burnt offerings (Lev. 18:21; Deut. 12:31). Let’s reflect on whether the things we are demanding of ourselves and others truly align with God’s Word. True courage is being willing to change wrongful beliefs and actions.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, when you shine a light on the wrongfulness of my beliefs or actions, give me the courage to acknowledge it and change my ways.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"heb_11": {}, "jdgs_10": {}, "jdgs_11": {}, "2ki_3": {}, "deu_12": {}, "lev_27": {}, "num_30": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
