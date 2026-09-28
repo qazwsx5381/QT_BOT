@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 내 이름은 기묘자라</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 내 이름은 기묘자라</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-09-29<br>
+                <strong>본문 :</strong> 사사기(Judges) 13:15 - 13:25
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">마노아가 여호와의 사자에게 말하되 구하옵나니 당신은 우리에게 머물러서 우리가 당신을 위하여 염소 새끼 하나를 준비하게 하소서 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와의 사자가 마노아에게 이르되 네가 비록 나를 머물게 하나 내가 네 음식을 먹지 아니하리라 번제를 준비하려거든 마땅히 여호와께 드릴지니라 하니 이는 그가 여호와의 사자인 줄을 마노아가 알지 못함이었더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">마노아가 또 여호와의 사자에게 말하되 당신의 이름이 무엇이니이까 당신의 말씀이 이루어질 때에 우리가 당신을 존귀히 여기리이다 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와의 사자가 그에게 이르되 어찌하여 내 이름을 묻느냐 내 이름은 기묘자라 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 마노아가 염소 새끼와 소제물을 가져다가 바위 위에서 여호와께 드리매 이적이 일어난지라 마노아와 그의 아내가 본즉</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">불꽃이 제단에서부터 하늘로 올라가는 동시에 여호와의 사자가 제단 불꽃에 휩싸여 올라간지라 마노아와 그의 아내가 그것을 보고 그들의 얼굴을 땅에 대고 엎드리니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와의 사자가 마노아와 그의 아내에게 다시 나타나지 아니하니 마노아가 그제야 그가 여호와의 사자인 줄 알고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">22절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그의 아내에게 이르되 우리가 하나님을 보았으니 반드시 죽으리로다 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">23절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그의 아내가 그에게 이르되 여호와께서 우리를 죽이려 하셨더라면 우리 손에서 번제와 소제를 받지 아니하셨을 것이요 이 모든 일을 보이지 아니하셨을 것이며 이제 이런 말씀도 우리에게 이르지 아니하셨으리이다 하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">24절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 여인이 아들을 낳으매 그의 이름을 삼손이라 하니라 그 아이가 자라매 여호와께서 그에게 복을 주시더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">25절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">소라와 에스다올 사이 마하네단에서 여호와의 영이 그를 움직이기 시작하셨더라</div></div></div></div>
+            <hr>
+            <div class="content-area">여호와의 사자는 이름을 묻고 음식을 대접하려는 마노아에게 ‘기묘자’라는 이름을 알리시고 하나님을 예배하라 하십니다. 약속대로 태어난 삼손에게 여호와의 영이 임합니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 15-18절</div>   사람의 이해를 초월하시는 분입니다. 마노아는 이름을 묻고 음식을 대접함으로써 초자연적인 존재를 인간의 예의와 통제 아래 묶어 두려 했습니다. 그러나 하나님은 자신을 ‘기묘자’로 계시하며, 인간의 한계 너머에 계신 존재로 알리셨습니다. 하나님은 우리가 마음대로 조종하거나 생각의 틀에 가둘 수 있는 분이 아닙니다. 신앙은 하나님을 분석하고 내 수준에서 통제하는 것이 아니라, 신비와 여백을 품고 신뢰 속에서 주의 역사를 기대하는 것입니다.<br>16, 19-20절   여호와의 사자는 마노아의 음식을 거절하고 번제를 여호와께 드리라고 명령함으로 신앙의 본질을 가르치셨습니다. 타락한 인간에게는 신을 대접하여 자기가 원하는 복을 받아 내려는 성향이 있습니다. 그러나 참된 신앙은 내가 주인이 되어 하나님을 대접하는 것이 아니라, 나를 번제로 온전히 태워 드림으로 하나님의 주권을 인정하는 것입니다. 예배는 하나님께 무언가를 공급하는 행위가 아니라, 그분의 구원 역사에 나 자신을 굴복시키는 행위입니다.<br><div class="verse-point">📍 24-25절</div>   블레셋의 압제 아래서 신음 소리조차 내지 못하던 암흑의 시대에, 약속의 자녀 삼손(작은 태양)을 태어나게 하셨습니다. 이스라엘을 구원하기 위해(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;13:5&quot;, &quot;label&quot;: &quot;사사기 13장 5절&quot;}]', '사사기 (13:5)', 'kr')">13:5</span>) 여호와의 영이 삼손의 내면을 ‘격동하기’ 시작하셨습니다. 구원의 에너지는 인간의 정치적 각성이나 조직적 운동에서 나오지 않습니다. 성령께서 잠들어 있는 인간의 영혼을 강하게 흔드실 때, 비로소 구원의 도구로 쓰임받을 수 있습니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 21-23절</div>   마노아는 “하나님을 보았으니 반드시 죽으리라”는 공포에 사로잡혔지만, 그의 아내는 하나님이 베푸신 ‘예배의 열납’, ‘약속의 말씀’이라는 은혜의 증거를 기반으로 하나님의 선하신 뜻을 분별해 냈습니다. 인생의 위기를 만날 때나 사탄이 나를 정죄할 때, 하나님이 이미 내 삶에 행하신 은혜의 증거들을 기억합시다. 나를 살리려고 독생자를 제물로 내어주신 하나님이 나를 절망 속에 버려두실 리 없다는 복음적 확신을 선포할 때, 두려움의 흑암은 떠나갈 것입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>성령으로 제 마음을 격동하여 주시고, 이해를 초월한 하나님의 구원 역사에 동참하게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>영국 복음주의자들의 57%는 직장 동료에게 신앙 이야기를 전하는 데 긍정적이다. 이들의 용기와 열심이 복음전도뿐 아니라 진정성 있는 삶의 변화로 이어</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Samson’s Birth</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-09-29<br>
+                <strong>Passage :</strong> 사사기(Judges) 13:15 - 13:25
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Manoah said to the angel of the LORD, "Please let us detain you and prepare a young goat for you."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the angel of the LORD said to Manoah, "If you detain me, I will not eat of your food. But if you prepare a burnt offering, then offer it to the LORD." (For Manoah did not know that he was the angel of the LORD.)</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Manoah said to the angel of the LORD, "What is your name, so that, when your words come true, we may honor you?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the angel of the LORD said to him, "Why do you ask my name, seeing it is wonderful?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So Manoah took the young goat with the grain offering, and offered it on the rock to the LORD, to the one who works wonders, and Manoah and his wife were watching.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And when the flame went up toward heaven from the altar, the angel of the LORD went up in the flame of the altar. Now Manoah and his wife were watching, and they fell on their faces to the ground.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">The angel of the LORD appeared no more to Manoah and to his wife. Then Manoah knew that he was the angel of the LORD.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.22</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Manoah said to his wife, "We shall surely die, for we have seen God."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.23</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But his wife said to him, "If the LORD had meant to kill us, he would not have accepted a burnt offering and a grain offering at our hands, or shown us all these things, or now announced to us such things as these."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.24</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the woman bore a son and called his name Samson. And the young man grew, and the LORD blessed him.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.25</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the Spirit of the LORD began to stir him in Mahaneh-dan, between Zorah and Eshtaol.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Manoah tried to offer the angel food, but the angel told him to prepare a burnt offering for the Lord instead. Manoah asked the angel his name, but the angel told him it was beyond understanding. Once the burnt offering was given, the angel went up to heaven in a flame, and Manoah knew that he was an angel of the Lord. Manoah was afraid that he would die because he had seen God, but his wife reassured him that they did not need to be afraid because God had accepted their offering and spoken to them. Eventually, Manoah and his wife gave birth to a son and named him Samson, and as the boy grew up, the Spirit of the Lord began to stir in him.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 15-18</div>Even the angel of the Lord could not take the Lord’s glory, and no individual is supreme enough to be worshipped. Just as the angel’s name was a secret, the Lord’s workers should also work anonymously. The only name that should be revealed through our labour and servitude is the name of God.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 22-23</div>Manoah was overcome with uncertain fear, but his wife wisely understood the Lord’s doing. She knew that God had come to them and spoken to them not to harm them but to bless them. Let’s reflect on the Lord’s works through the Word and inquire after his good purpose for us.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help us to obey your Word, whatever your command, by keeping our eyes on your salvation, which transcends our understanding.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"jdgs_13": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
