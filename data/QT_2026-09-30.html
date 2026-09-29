@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 딤나로 내려간 삼손</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 딤나로 내려간 삼손</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-09-30<br>
+                <strong>본문 :</strong> 사사기(Judges) 14:1 - 14:20
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 딤나에 내려가서 거기서 블레셋 사람의 딸들 중에서 한 여자를 보고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">올라와서 자기 부모에게 말하여 이르되 내가 딤나에서 블레셋 사람의 딸들 중에서 한 여자를 보았사오니 이제 그를 맞이하여 내 아내로 삼게 하소서 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그의 부모가 그에게 이르되 네 형제들의 딸들 중에나 내 백성 중에 어찌 여자가 없어서 네가 할례 받지 아니한 블레셋 사람에게 가서 아내를 맞으려 하느냐 하니 삼손이 그의 아버지에게 이르되 내가 그 여자를 좋아하오니 나를 위하여 그 여자를 데려오소서 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 때에 블레셋 사람이 이스라엘을 다스린 까닭에 삼손이 틈을 타서 블레셋 사람을 치려 함이었으나 그의 부모는 이 일이 여호와께로부터 나온 것인 줄은 알지 못하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 그의 부모와 함께 딤나에 내려가 딤나의 포도원에 이른즉 젊은 사자가 그를 보고 소리 지르는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와의 영이 삼손에게 강하게 임하니 그가 손에 아무것도 없이 그 사자를 염소 새끼를 찢는 것 같이 찢었으나 그는 자기가 행한 일을 부모에게 알리지 아니하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 내려가서 그 여자와 말하니 그 여자가 삼손의 눈에 들었더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">얼마 후에 삼손이 그 여자를 맞이하려고 다시 가다가 돌이켜 그 사자의 주검을 본즉 사자의 몸에 벌 떼와 꿀이 있는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">손으로 그 꿀을 떠서 걸어가며 먹고 그의 부모에게 이르러 그들에게 그것을 드려서 먹게 하였으나 그 꿀을 사자의 몸에서 떠왔다고는 알리지 아니하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손의 아버지가 여자에게로 내려가매 삼손이 거기서 잔치를 베풀었으니 청년들은 이렇게 행하는 풍속이 있음이더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">무리가 삼손을 보고 삼십 명을 데려와서 친구를 삼아 그와 함께 하게 한지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 그들에게 이르되 이제 내가 너희에게 수수께끼를 내리니 잔치하는 이레 동안에 너희가 그것을 풀어 내게 말하면 내가 베옷 삼십 벌과 겉옷 삼십 벌을 너희에게 주리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그러나 그것을 능히 내게 말하지 못하면 너희가 내게 베옷 삼십 벌과 겉옷 삼십 벌을 줄지니라 하니 그들이 이르되 네가 수수께끼를 내면 우리가 그것을 들으리라 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 그들에게 이르되 먹는 자에게서 먹는 것이 나오고 강한 자에게서 단 것이 나왔느니라 하니라 그들이 사흘이 되도록 수수께끼를 풀지 못하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">일곱째 날에 이르러 그들이 삼손의 아내에게 이르되 너는 네 남편을 꾀어 그 수수께끼를 우리에게 알려 달라 하라 그렇지 아니하면 너와 네 아버지의 집을 불사르리라 너희가 우리의 소유를 빼앗고자 하여 우리를 청한 것이 아니냐 그렇지 아니하냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손의 아내가 그의 앞에서 울며 이르되 당신이 나를 미워할 뿐이요 사랑하지 아니하는도다 우리 민족에게 수수께끼를 말하고 그 뜻을 내게 알려 주지 아니하도다 하는지라 삼손이 그에게 이르되 보라 내가 그것을 나의 부모에게도 알려 주지 아니하였거든 어찌 그대에게 알게 하리요 하였으나</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">칠 일 동안 그들이 잔치할 때 그의 아내가 그 앞에서 울며 그에게 강요함으로 일곱째 날에는 그가 그의 아내에게 수수께끼를 알려 주매 그의 아내가 그것을 자기 백성들에게 알려 주었더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">일곱째 날 해 지기 전에 성읍 사람들이 삼손에게 이르되 무엇이 꿀보다 달겠으며 무엇이 사자보다 강하겠느냐 한지라 삼손이 그들에게 이르되 너희가 내 암송아지로 밭 갈지 아니하였더라면 내 수수께끼를 능히 풀지 못하였으리라 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와의 영이 삼손에게 갑자기 임하시매 삼손이 아스글론에 내려가서 그 곳 사람 삼십 명을 쳐죽이고 노략하여 수수께끼 푼 자들에게 옷을 주고 심히 노하여 그의 아버지의 집으로 올라갔고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손의 아내는 삼손의 친구였던 그의 친구에게 준 바 되었더라</div></div></div></div>
+            <hr>
+            <div class="content-area">블레셋 여인과 사랑에 빠진 삼손은 부모의 만류에도 혼인을 강행합니다. 제멋대로 행동하는 삼손을 통해 블레셋을 치려는 하나님의 계획이 이뤄집니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2>4, 19절   결코 죄를 긍정하지 않으시지만, 그 죄의 흔적까지도 구원 역사의 도구로 승화시키십니다. 삼손은 사명으로 움직이지 않았습니다. 정욕 때문에 딤나로 갔고, 식욕 때문에 사체의 꿀을 먹었으며, 자존심과 분노 때문에 아스글론 사람들을 죽였습니다. 그러나 하나님은 삼손의 사리사욕과 뒤틀린 복수심을 이용해 블레셋을 흔드는 구원의 ‘틈’을 내셨습니다. 사람은 실패하나 하나님의 계획은 절대 실패하지 않습니다. 하나님의 일하심은 참으로 ‘기묘’(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;13:18&quot;, &quot;label&quot;: &quot;사사기 13장 18절&quot;}]', '사사기 (13:18)', 'kr')">13:18</span>)합니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 1-3절</div>   삼손은 “내가 그 여자를 좋아한다”(내 눈에 좋았다)며 아내로 삼으려 했습니다. ‘눈에 좋은 대로’(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;14:3&quot;, &quot;label&quot;: &quot;사사기 14장 3절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;14:7&quot;, &quot;label&quot;: &quot;사사기 14장 7절&quot;}]', '사사기 (3, 7절)', 'kr')">3, 7절</span>) 행동하는 삼손은 ‘자기 소견(소욕)에 옳은 대로’(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;17:6&quot;, &quot;label&quot;: &quot;사사기 17장 6절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;21:25&quot;, &quot;label&quot;: &quot;사사기 21장 25절&quot;}]', '사사기 (17:6; 21:25)', 'kr')">17:6; 21:25</span>) 살아가는 이스라엘의 모습을 반영합니다. “네 마음이 가는 대로 하라”, “네가 행복하다면 그것이 곧 진리다”라는 말처럼 위험한 것도 없습니다. 우리의 선택 기준은 ‘내 눈에 좋은 대로’가 아니라 ‘하나님의 말씀에 옳은 대로’여야 합니다.<br><div class="verse-point">📍 5-14절</div>   삼손이 처음부터 머리카락이 잘리고 눈이 뽑히는 지경에 이른 것은 아닙니다. 그의 타락은 사소한 경계선을 허물며 시작되었습니다. 나실인이면서 포도원 주변을 서성거렸고, 사자의 사체에 생긴 꿀을 손으로 꺼내 먹었습니다. 또한 블레셋의 풍습에 따라 술잔치를 열고, 죄의 이력인 ‘사체의 꿀’을 자랑거리로 삼아 수수께끼를 냈습니다. 나실인으로서 죄를 애통하기는커녕 사람들을 이기기 위한 오락과 유희의 소재로 전락시킨 것입니다. ‘이 정도쯤은 괜찮겠지’라는 안일함이 그의 신앙과 삶을 파탄으로 몰아가고 있었습니다.<br><div class="verse-point">📍 15-19절</div>   여호와의 영이 삼손에게 두 번이나 강력하게 임했지만(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;14:6&quot;, &quot;label&quot;: &quot;사사기 14장 6절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;14:19&quot;, &quot;label&quot;: &quot;사사기 14장 19절&quot;}]', '사사기 (6, 19절)', 'kr')">6, 19절</span>), 성령으로 인한 능력 발현이 삼손의 인격적인 성숙이나 도덕적 성결을 보장하지 않았습니다. 삼손은 사자를 찢는 힘이 있었으나 ‘눈의 정욕’을 통제할 절제력이 없었고, 아스글론에서 30명을 죽이는 무력이 있었으나 여인의 눈물에 비밀을 누설하는 무력함을 보였습니다. 능력과 은사는 성품과 신앙의 성숙을 대변하지 못합니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>눈에 좋은 대로 살지 않고 말씀으로 정욕을 이기며 성도답게 살게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>스위스에서는 교회 기반 난민 플랫폼(kirchen-helfen.ch)이 우크라이나 난민 지원에 크게 기여하고 있다. 이 사역이 더욱 활성화되어 난민들이 안정감 속에 정착하도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: From the Lord</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-09-30<br>
+                <strong>Passage :</strong> 사사기(Judges) 14:1 - 14:20
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Samson went down to Timnah, and at Timnah he saw one of the daughters of the Philistines.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then he came up and told his father and mother, "I saw one of the daughters of the Philistines at Timnah. Now get her for me as my wife."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But his father and mother said to him, "Is there not a woman among the daughters of your relatives, or among all our people, that you must go to take a wife from the uncircumcised Philistines?" But Samson said to his father, "Get her for me, for she is right in my eyes."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">His father and mother did not know that it was from the LORD, for he was seeking an opportunity against the Philistines. At that time the Philistines ruled over Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then Samson went down with his father and mother to Timnah, and they came to the vineyards of Timnah. And behold, a young lion came toward him roaring.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the Spirit of the LORD rushed upon him, and although he had nothing in his hand, he tore the lion in pieces as one tears a young goat. But he did not tell his father or his mother what he had done.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then he went down and talked with the woman, and she was right in Samson's eyes.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">After some days he returned to take her. And he turned aside to see the carcass of the lion, and behold, there was a swarm of bees in the body of the lion, and honey.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">He scraped it out into his hands and went on, eating as he went. And he came to his father and mother and gave some to them, and they ate. But he did not tell them that he had scraped the honey from the carcass of the lion.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">His father went down to the woman, and Samson prepared a feast there, for so the young men used to do.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">As soon as the people saw him, they brought thirty companions to be with him.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Samson said to them, "Let me now put a riddle to you. If you can tell me what it is, within the seven days of the feast, and find it out, then I will give you thirty linen garments and thirty changes of clothes,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">but if you cannot tell me what it is, then you shall give me thirty linen garments and thirty changes of clothes." And they said to him, "Put your riddle, that we may hear it."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he said to them, "Out of the eater came something to eat. Out of the strong came something sweet." And in three days they could not solve the riddle.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">On the fourth day they said to Samson's wife, "Entice your husband to tell us what the riddle is, lest we burn you and your father's house with fire. Have you invited us here to impoverish us?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Samson's wife wept over him and said, "You only hate me; you do not love me. You have put a riddle to my people, and you have not told me what it is." And he said to her, "Behold, I have not told my father nor my mother, and shall I tell you?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">She wept before him the seven days that their feast lasted, and on the seventh day he told her, because she pressed him hard. Then she told the riddle to her people.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the men of the city said to him on the seventh day before the sun went down, "What is sweeter than honey? What is stronger than a lion?" And he said to them, "If you had not plowed with my heifer, you would not have found out my riddle."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the Spirit of the LORD rushed upon him, and he went down to Ashkelon and struck down thirty men of the town and took their spoil and gave the garments to those who had told the riddle. In hot anger he went back to his father's house.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Samson's wife was given to his companion, who had been his best man.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Samson stubbornly insisted on marrying a Philistine woman he saw at Timnah. His parents opposed, but it was a part of God’s plan to strike the Philistines. On the way to Timnah, the Lord’s Spirit came upon Samson, and Samson tore a lion to death with his bare hands. Later, Samson scraped out and ate honey from the carcass of the lion and even gave some to his parents. During the wedding feast, he came up with a riddle based on this incident, and the Philistines solved the riddle by threatening his bride. Enraged, Samson killed 30 Philistine men and returned to his father’s house.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 1-20</div>God uses even the small plans of individuals as instruments for fulfilling his plans. The Philistines’ power over Israel was also a part of God’s plan to punish Israel. It may appear as if people each live according to their own plans, but in the end, it is the Lord’s will that get accomplished. However, all people will be repaid according to their deeds, whether good or bad.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 5-9</div>Samson was a judge who was appointed to make the people look to God, but he pursued what was appealing in his eyes. He was supposed to preserve his holiness as a Nazirite, but he drank wine and even touched a carcass. He sought the help of God’s spirit when he needed the strength, but he neglected to protect his holiness. Let’s reflect on whether we are focusing on God’s glory as people who have been called to follow Christ.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me to become a Nazirite who obeys your Word rather than pursuing what seems good in my eyes.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"jdgs_13": {}, "jdgs_14": {}, "jdgs_17": {}, "jdgs_21": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
