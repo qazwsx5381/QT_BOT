@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 밤에 삼켜지는 태양</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 밤에 삼켜지는 태양</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-02<br>
+                <strong>본문 :</strong> 사사기(Judges) 16:1 - 16:14
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 가사에 가서 거기서 한 기생을 보고 그에게로 들어갔더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">가사 사람들에게 삼손이 왔다고 알려지매 그들이 곧 그를 에워싸고 밤새도록 성문에 매복하고 밤새도록 조용히 하며 이르기를 새벽이 되거든 그를 죽이리라 하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 밤중까지 누워 있다가 그 밤중에 일어나 성 문짝들과 두 문설주와 문빗장을 빼어 가지고 그것을 모두 어깨에 메고 헤브론 앞산 꼭대기로 가니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이 후에 삼손이 소렉 골짜기의 들릴라라 이름하는 여인을 사랑하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">블레셋 사람의 방백들이 그 여인에게로 올라가서 그에게 이르되 삼손을 꾀어서 무엇으로 말미암아 그 큰 힘이 생기는지 그리고 우리가 어떻게 하면 능히 그를 결박하여 굴복하게 할 수 있을는지 알아보라 그리하면 우리가 각각 은 천백 개씩을 네게 주리라 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">들릴라가 삼손에게 말하되 청하건대 당신의 큰 힘이 무엇으로 말미암아 생기며 어떻게 하면 능히 당신을 결박하여 굴복하게 할 수 있을는지 내게 말하라 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 그에게 이르되 만일 마르지 아니한 새 활줄 일곱으로 나를 결박하면 내가 약해져서 다른 사람과 같으리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">블레셋 사람의 방백들이 마르지 아니한 새 활줄 일곱을 여인에게로 가져오매 그가 그것으로 삼손을 결박하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이미 사람을 방 안에 매복시켰으므로 삼손에게 말하되 삼손이여 블레셋 사람들이 당신에게 들이닥쳤느니라 하니 삼손이 그 줄들을 끊기를 불탄 삼실을 끊음 같이 하였고 그의 힘의 근원은 알아내지 못하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">들릴라가 삼손에게 이르되 보라 당신이 나를 희롱하여 내게 거짓말을 하였도다 청하건대 무엇으로 당신을 결박할 수 있을는지 이제는 내게 말하라 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">삼손이 그에게 이르되 만일 쓰지 아니한 새 밧줄들로 나를 결박하면 내가 약해져서 다른 사람과 같으리라 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">들릴라가 새 밧줄들을 가져다가 그것들로 그를 결박하고 그에게 이르되 삼손이여 블레셋 사람이 당신에게 들이닥쳤느니라 하니 삼손이 팔 위의 줄 끊기를 실을 끊음 같이 하였고 그 때에도 사람이 방 안에 매복하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">들릴라가 삼손에게 이르되 당신이 이 때까지 나를 희롱하여 내게 거짓말을 하였도다 내가 무엇으로 당신을 결박할 수 있을는지 내게 말하라 하니 삼손이 그에게 이르되 그대가 만일 나의 머리털 일곱 가닥을 베틀의 날실에 섞어 짜면 되리라 하는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">들릴라가 바디로 그 머리털을 단단히 짜고 그에게 이르되 삼손이여 블레셋 사람들이 당신에게 들이닥쳤느니라 하니 삼손이 잠을 깨어 베틀의 바디와 날실을 다 빼내니라</div></div></div></div>
+            <hr>
+            <div class="content-area">블레셋 사람들은 삼손이 가진 힘의 비밀을 알아내기 위해 삼손이 사랑하는 여인 들릴라를 매수합니다. ‘태양의 사람’ 삼손이 ‘밤의 여인’ 들릴라의 품에 삼켜집니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 1-3절</div>   삼손이 블레셋의 심장부인 가사로 가서 음행했음에도, 그의 능력을 거두지 않으셨습니다. 가사 사람들은 성문을 닫아걸고 삼손이 덫에 걸렸다고 확신했으나, 삼손은 한밤중에 일어나 가사의 군사적 방어력을 상징하는 성문과 문설주를 통째로 뽑아, 약 60킬로미터 떨어진 헤브론 산꼭대기까지 메고 가는 괴력을 발휘했습니다. 하나님이 힘을 거두지 않으신 것은 삼손의 의로움이나 뛰어남 때문이 아니었습니다. 대적 블레셋을 심판하기 위한 은혜이자 삼손에게 주신 회개의 기회였습니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 4-9절</div>   블레셋 방백들은 삼손이 가사(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;16:1&quot;, &quot;label&quot;: &quot;사사기 16장 1절&quot;}]', '사사기 (1절)', 'kr')">1절</span>)에 왔을 때 잡으려 했으나, 그의 괴력을 무력으로 제압할 수 없음을 깨달았습니다. 하는 수 없이 천문학적인 뇌물로 소렉 골짜기의 여인 들릴라를 매수해 힘의 비밀을 캐내려 했습니다. 들릴라가 끊임없이 결박의 음모를 꾸미고 자객들이 들이닥치는 절체절명의 위기 속에서도, 삼손은 이를 단순한 애정 행각이나 수수께끼 놀이 정도로 여기며 첫 번째 거짓말(새 활줄 일곱)로 대응했습니다. ‘태양’이라는 뜻을 가진 사사 삼손이 ‘밤’을 상징하는 여인 들릴라의 거짓된 사랑에 눈이 멀어 마음을 완전히 빼앗기고 만 것입니다. 사명을 잊고 세상이 주는 안락함에 취하면, 나를 파멸시키려는 사탄의 치밀한 올무와 영적 위기를 감지하지 못합니다. 빛의 정체성을 잃지 않으려면 ‘말씀의 빛’ 안에 머물러야 합니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;psa&quot;, &quot;verse&quot;: &quot;119:105&quot;, &quot;label&quot;: &quot;시편 119장 105절&quot;}, {&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;119:130&quot;, &quot;label&quot;: &quot;사사기 119장 130절&quot;}, {&quot;book&quot;: &quot;prv&quot;, &quot;verse&quot;: &quot;6:23&quot;, &quot;label&quot;: &quot;잠언 6장 23절&quot;}]', '사사기 (시 119:105, 130; 잠 6:23)', 'kr')">시 119:105, 130; 잠 6:23</span>).<br><div class="verse-point">📍 10-14절</div>   들릴라의 유혹을 받던 삼손은 두 번째 거짓말(새 밧줄)을 지나 세 번째 시험에 이르러서는, 나실인의 핵심 서원인 머리카락을 입 밖에 내고 말았습니다. 잠에서 깨어나 베틀의 거대한 구조물을 통째로 뽑아내며 위기를 모면했으나, 자신의 머리카락이 대적의 기계에 짓밟히고 엉킨 모습을 보고도 아무런 위기감을 느끼지 못했습니다. 죄는 단번에 인간을 파멸시키지 않고, 타협의 경계선을 조금씩 좁혀 오며 영적 감각을 마비시킵니다. 내 삶에 켜진 작은 경고등을 무시하고 거룩한 경계선을 가볍게 여기다 보면, 결국 가장 소중한 사명과 정체성까지 잃어버리게 됩니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>세상의 안락함에 취하지 않게 하시고, 일상에서 거룩한 경계선을 지키게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>2025년 전 세계에서 고국을 떠나 다른 곳으로 이주하는 과정에서 약 8000명이 사망하거나 실종됐다. 이들의 안전과 보호를 위해 전 세계가 관심을 갖고 협력하도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Samson and Delilah</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-02<br>
+                <strong>Passage :</strong> 사사기(Judges) 16:1 - 16:14
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Samson went to Gaza, and there he saw a prostitute, and he went in to her.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">The Gazites were told, "Samson has come here." And they surrounded the place and set an ambush for him all night at the gate of the city. They kept quiet all night, saying, "Let us wait till the light of the morning; then we will kill him."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But Samson lay till midnight, and at midnight he arose and took hold of the doors of the gate of the city and the two posts, and pulled them up, bar and all, and put them on his shoulders and carried them to the top of the hill that is in front of Hebron.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">After this he loved a woman in the Valley of Sorek, whose name was Delilah.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the lords of the Philistines came up to her and said to her, "Seduce him, and see where his great strength lies, and by what means we may overpower him, that we may bind him to humble him. And we will each give you 1,100 pieces of silver."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So Delilah said to Samson, "Please tell me where your great strength lies, and how you might be bound, that one could subdue you."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Samson said to her, "If they bind me with seven fresh bowstrings that have not been dried, then I shall become weak and be like any other man."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the lords of the Philistines brought up to her seven fresh bowstrings that had not been dried, and she bound him with them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Now she had men lying in ambush in an inner chamber. And she said to him, "The Philistines are upon you, Samson!" But he snapped the bowstrings, as a thread of flax snaps when it touches the fire. So the secret of his strength was not known.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then Delilah said to Samson, "Behold, you have mocked me and told me lies. Please tell me how you might be bound."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he said to her, "If they bind me with new ropes that have not been used, then I shall become weak and be like any other man."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So Delilah took new ropes and bound him with them and said to him, "The Philistines are upon you, Samson!" And the men lying in ambush were in an inner chamber. But he snapped the ropes off his arms like a thread.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then Delilah said to Samson, "Until now you have mocked me and told me lies. Tell me how you might be bound." And he said to her, "If you weave the seven locks of my head with the web and fasten it tight with the pin, then I shall become weak and be like any other man."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So while he slept, Delilah took the seven locks of his head and wove them into the web. And she made them tight with the pin and said to him, "The Philistines are upon you, Samson!" But he awoke from his sleep and pulled away the pin, the loom, and the web.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Samson was a Nazirite and a judge, but he kept committing deeds that did not align with his calling. He focused more on pursuing his own desires than on guiding and caring for the people of Israel. In Gaza, he entered the house of a prostitute, escaped a Philistine ambush, and carried away the city gate, posts and all. Then Samson fell in love with Delilah in the Valley of Sorek. The Philistines conspired to capture Samson by bribing Delilah, who persistently asked Samson the secret to his strength. Samson repeatedly escaped danger with lies, but as his heart was captivated by Delilah, he began to reveal more and more of the truth.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 1-3</div>God never stops his work of salvation despite people’s sins and weaknesses. Samson behaved in ways that did not befit his calling as a judge and Nazirite, but God still used him to crush the power of the Philistines. God waited for Israel to repent and return, and he kept carrying out his work of salvation to the end.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 1-13</div>How we use our strength matters more than how strong we are. Samson was immensely strong, but he used his strength in the wrong places. When we use the money, abilities, and positions that God has given to us rightly, we can live in a way that brings life to ourselves and others.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me not to forget the calling you have entrusted to me by losing myself in the sweet temptations of the world.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"jdgs_16": {}, "psa_119": {}, "jdgs_119": {}, "prv_6": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
