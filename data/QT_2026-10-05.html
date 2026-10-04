@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 신앙으로 포장된 욕망</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 신앙으로 포장된 욕망</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-05<br>
+                <strong>본문 :</strong> 사사기(Judges) 18:1 - 18:20
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 때에 이스라엘에 왕이 없었고 단 지파는 그 때에 거주할 기업의 땅을 구하는 중이었으니 이는 그들이 이스라엘 지파 중에서 그 때까지 기업을 분배 받지 못하였음이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손이 소라와 에스다올에서부터 그들의 가족 가운데 용맹스런 다섯 사람을 보내어 땅을 정탐하고 살피게 하며 그들에게 이르되 너희는 가서 땅을 살펴보라 하매 그들이 에브라임 산지에 가서 미가의 집에 이르러 거기서 유숙하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 미가의 집에 있을 때에 그 레위 청년의 음성을 알아듣고 그리로 돌아가서 그에게 이르되 누가 너를 이리로 인도하였으며 네가 여기서 무엇을 하며 여기서 무엇을 얻었느냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 그들에게 이르되 미가가 이러이러하게 나를 대접하고 나를 고용하여 나를 자기의 제사장으로 삼았느니라 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 그에게 이르되 청하건대 우리를 위하여 하나님께 물어 보아서 우리가 가는 길이 형통할는지 우리에게 알게 하라 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 제사장이 그들에게 이르되 평안히 가라 너희가 가는 길은 여호와 앞에 있느니라 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 다섯 사람이 떠나 라이스에 이르러 거기 있는 백성을 본즉 염려 없이 거주하며 시돈 사람들이 사는 것처럼 평온하며 안전하니 그 땅에는 부족한 것이 없으며 부를 누리며 시돈 사람들과 거리가 멀고 어떤 사람과도 상종하지 아니함이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 소라와 에스다올에 돌아가서 그들의 형제들에게 이르매 형제들이 그들에게 묻되 너희가 보기에 어떠하더냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이르되 일어나 그들을 치러 올라가자 우리가 그 땅을 본즉 매우 좋더라 너희는 가만히 있느냐 나아가서 그 땅 얻기를 게을리 하지 말라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희가 가면 평화로운 백성을 만날 것이요 그 땅은 넓고 그 곳에는 세상에 있는 것이 하나도 부족함이 없느니라 하나님이 그 땅을 너희 손에 넘겨 주셨느니라 하는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 지파의 가족 중 육백 명이 무기를 지니고 소라와 에스다올에서 출발하여</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">올라가서 유다에 있는 기럇여아림에 진 치니 그러므로 그 곳 이름이 오늘까지 마하네 단이며 그 곳은 기럇여아림 뒤에 있더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">무리가 거기서 떠나 에브라임 산지 미가의 집에 이르니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">전에 라이스 땅을 정탐하러 갔던 다섯 사람이 그 형제들에게 말하여 이르되 이 집에 에봇과 드라빔과 새긴 신상과 부어 만든 신상이 있는 줄을 너희가 아느냐 그런즉 이제 너희는 마땅히 행할 것을 생각하라 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">다섯 사람이 그 쪽으로 향하여 그 청년 레위 사람의 집 곧 미가의 집에 이르러 그에게 문안하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손 육백 명은 무기를 지니고 문 입구에 서니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 땅을 정탐하러 갔던 다섯 사람이 그리로 들어가서 새긴 신상과 에봇과 드라빔과 부어 만든 신상을 가져갈 때에 그 제사장은 무기를 지닌 육백 명과 함께 문 입구에 섰더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 다섯 사람이 미가의 집에 들어가서 그 새긴 신상과 에봇과 드라빔과 부어 만든 신상을 가지고 나오매 그 제사장이 그들에게 묻되 너희가 무엇을 하느냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 그에게 이르되 잠잠하라 네 손을 입에 대라 우리와 함께 가서 우리의 아버지와 제사장이 되라 네가 한 사람의 집의 제사장이 되는 것과 이스라엘의 한 지파 한 족속의 제사장이 되는 것 중에서 어느 것이 낫겠느냐 하는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 제사장이 마음에 기뻐하여 에봇과 드라빔과 새긴 우상을 받아 가지고 그 백성 가운데로 들어가니라</div></div></div></div>
+            <hr>
+            <div class="content-area">기업을 잃은 단 지파는 사사로운 정욕을 따라 우상을 탈취하고 제사장을 매수합니다. 하나님에 대한 불신과 종교 혼합주의가 미가 한 가정을 넘어 한 지파로 확산하고 있습니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 1절</div>   단 지파는 이미 여호수아를 통해 기업의 땅을 분배받았으나(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;josh&quot;, &quot;verse&quot;: &quot;19:40-48&quot;, &quot;label&quot;: &quot;여호수아 19장 40절 ~ 48절&quot;}]', '사사기 (수 19:40-48)', 'kr')">수 19:40-48</span>), 대적과의 싸움이 두려워 정복 사명을 완수하지 못했습니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;1:34&quot;, &quot;label&quot;: &quot;사사기 1장 34절&quot;}]', '사사기 (삿 1:34)', 'kr')">삿 1:34</span>). 이들이 거주할 땅을 찾아 여전히 유랑하는 실상은, 참된 왕이신 하나님의 결정을 거부하고 ‘자기 소견에 옳은 대로’ 행한 불순종의 결과입니다. 하나님이 맡기신 사명의 자리를 믿음으로 지키기보다 편하고 좋은 환경을 찾아 제멋대로 떠도는 삶은 나그네의 ‘여정’이 아니라, 하나님의 주권을 거부하는 ‘일탈’입니다.<br><div class="verse-point">📍 2-6절</div>   땅을 찾아 나선 단 지파의 정탐꾼들은 미가의 집에서 변질된 레위인을 만났습니다. 그들은 이 레위인에게 자신들의 길이 형통할지 하나님께 물어보라고 요구했고, 레위인은 하나님의 뜻과 상관없이 그들에게 듣기 좋은 가짜 축복을 선언했습니다. 이들에게는 신앙의 형식만 있을 뿐, 그 속은 온통 욕심과 야심으로 가득했습니다. 내 성공을 위해 하나님을 이용하려는 기도, 진리보다 듣고 싶어 하는 말을 들려주는 설교는 모두 신앙의 이름으로 포장된 욕망의 발현일 뿐입니다.<br><div class="verse-point">📍 7-10절</div>   라이스는 평온하고 안전하여 전쟁에 익숙하지 않았고, 아무런 동맹을 맺지 않아 위기 시에 군사적 도움을 받을 수 없는 고립된 마을이었습니다. 하나님이 주신 기업을 포기한 단 지파는 도리어 평화로운 라이스를 탐냈습니다. 그들은 약탈을 도모하면서도 “하나님이 우리 손에 넘겨주셨다”며 아전인수 격으로 상황을 해석했습니다. 내 욕망이 채워지는 상황을 무조건 ‘하나님의 인도하심’으로 포장하는 태도를 경계하고, 하나님의 공의와 말씀을 기준으로 상황을 분별해야 합니다.<br><div class="verse-point">📍 11-20절</div>   단 지파는 군사를 이끌고 라이스로 향하던 길에 미가의 집에서 에봇과 우상들을 강탈했습니다. “한 지파의 제사장이 되는 것이 낫지 않느냐”며 더 큰 성공을 미끼로 레위인을 매수했고, 돈과 출세에 눈먼 그는 제안을 흔쾌히 수용했습니다. 성직이 거래의 대상으로 변질되고 성직자가 돈과 권력의 하수인으로 전락한 모습, 이것이 왕이신 하나님을 외면한 사사 시대의 암울하고 절망적인 단면입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>제 욕망보다 하나님의 뜻을, 세상의 성공보다 부르심의 자리를 먼저 생각하게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>최근 세계보건기구(WHO)가 체중 2-5킬로그램의 영아들에게도 투약할 수 있는 말라리아 치료제를 승인했다. 아프리카를 비롯한 말라리아 고위험 지역에 이 치료제가 신속히 보급되도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: In Pursuit of Greed</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-05<br>
+                <strong>Passage :</strong> 사사기(Judges) 18:1 - 18:20
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">In those days there was no king in Israel. And in those days the tribe of the people of Dan was seeking for itself an inheritance to dwell in, for until then no inheritance among the tribes of Israel had fallen to them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So the people of Dan sent five able men from the whole number of their tribe, from Zorah and from Eshtaol, to spy out the land and to explore it. And they said to them, "Go and explore the land." And they came to the hill country of Ephraim, to the house of Micah, and lodged there.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">When they were by the house of Micah, they recognized the voice of the young Levite. And they turned aside and said to him, "Who brought you here? What are you doing in this place? What is your business here?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he said to them, "This is how Micah dealt with me: he has hired me, and I have become his priest."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they said to him, "Inquire of God, please, that we may know whether the journey on which we are setting out will succeed."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the priest said to them, "Go in peace. The journey on which you go is under the eye of the LORD."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the five men departed and came to Laish and saw the people who were there, how they lived in security, after the manner of the Sidonians, quiet and unsuspecting, lacking nothing that is in the earth and possessing wealth, and how they were far from the Sidonians and had no dealings with anyone.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And when they came to their brothers at Zorah and Eshtaol, their brothers said to them, "What do you report?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">They said, "Arise, and let us go up against them, for we have seen the land, and behold, it is very good. And will you do nothing? Do not be slow to go, to enter in and possess the land.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">As soon as you go, you will come to an unsuspecting people. The land is spacious, for God has given it into your hands, a place where there is no lack of anything that is in the earth."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So 600 men of the tribe of Dan, armed with weapons of war, set out from Zorah and Eshtaol,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and went up and encamped at Kiriath-jearim in Judah. On this account that place is called Mahaneh-dan to this day; behold, it is west of Kiriath-jearim.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they passed on from there to the hill country of Ephraim, and came to the house of Micah.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the five men who had gone to scout out the country of Laish said to their brothers, "Do you know that in these houses there are an ephod, household gods, a carved image, and a metal image? Now therefore consider what you will do."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they turned aside there and came to the house of the young Levite, at the home of Micah, and asked him about his welfare.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Now the 600 men of the Danites, armed with their weapons of war, stood by the entrance of the gate.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the five men who had gone to scout out the land went up and entered and took the carved image, the ephod, the household gods, and the metal image, while the priest stood by the entrance of the gate with the 600 men armed with weapons of war.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And when these went into Micah's house and took the carved image, the ephod, the household gods, and the metal image, the priest said to them, "What are you doing?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they said to him, "Keep quiet; put your hand on your mouth and come with us and be to us a father and a priest. Is it better for you to be priest to the house of one man, or to be priest to a tribe and clan in Israel?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the priest's heart was glad. He took the ephod and the household gods and the carved image and went along with the people.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>In the era of Judges, because there was no king, the people acted according to their own desires rather than following God’s Word. The tribe of Dan failed to fully conquer the land God had given them and sent out spies to find a place to settle. They decided that Laish was an easy target and sent 600 men to try to seize the land. On the way to Laish, the tribe of Dan took the idols, the ephod, and the carved image from Micah’s house and even made the young Levite come with them as their priest.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 V. 1</div>The tribe of Dan abandoned their calling to conquer the land that God had given to them and wandered in search of land that fit their own standards. They put their own thoughts and opinions before God’s will. We should also reflect on ourselves to see if we are not pursuing our own thoughts and profit rather than God’s Word. We must live according to God’s will, remembering that he is the true king of our lives.<br><div class="verse-point">📍 VV. 11-20</div>The idols and personal priest that Micah had relied on failed to protect his house. The idols were powerless beings who could not speak, and the young priest was an unreliable person who cared only about his own benefit. Neither money nor people can protect us or bless us. We can only rely on the Lord, who loves us unchangingly.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me lay aside my selfish desires and enthrone you alone as king over my life.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"josh_19": {}, "jdgs_1": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
