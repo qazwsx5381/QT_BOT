@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 탐욕의 끝, 심판</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 탐욕의 끝, 심판</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-06<br>
+                <strong>본문 :</strong> 사사기(Judges) 18:21 - 18:31
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 돌이켜서 어린 아이들과 가축과 값진 물건들을 앞세우고 길을 떠나더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">22절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 미가의 집을 멀리 떠난 때에 미가의 이웃집 사람들이 모여서 단 자손을 따라 붙어서</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">23절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손을 부르는지라 그들이 얼굴을 돌려 미가에게 이르되 네가 무슨 일로 이같이 모아 가지고 왔느냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">24절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">미가가 이르되 내가 만든 신들과 제사장을 빼앗아 갔으니 이제 내게 오히려 남은 것이 무엇이냐 너희가 어찌하여 나더러 무슨 일이냐고 하느냐 하는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">25절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손이 그에게 이르되 네 목소리를 우리에게 들리게 하지 말라 노한 자들이 너희를 쳐서 네 생명과 네 가족의 생명을 잃게 할까 하노라 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">26절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손이 자기 길을 간지라 미가가 단 자손이 자기보다 강한 것을 보고 돌이켜 집으로 돌아갔더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">27절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손이 미가가 만든 것과 그 제사장을 취하여 라이스에 이르러 한가하고 걱정 없이 사는 백성을 만나 칼날로 그들을 치며 그 성읍을 불사르되</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">28절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들을 구원할 자가 없었으니 그 성읍이 베드르홉 가까운 골짜기에 있어서 시돈과 거리가 멀고 상종하는 사람도 없음이었더라 단 자손이 성읍을 세우고 거기 거주하면서</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">29절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘에게서 태어난 그들의 조상 단의 이름을 따라 그 성읍을 단이라 하니라 그 성읍의 본 이름은 라이스였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">30절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">단 자손이 자기들을 위하여 그 새긴 신상을 세웠고 모세의 손자요 게르솜의 아들인 요나단과 그의 자손은 단 지파의 제사장이 되어 그 땅 백성이 사로잡히는 날까지 이르렀더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">31절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">하나님의 집이 실로에 있을 동안에 미가가 만든 바 새긴 신상이 단 자손에게 있었더라</div></div></div></div>
+            <hr>
+            <div class="content-area">단 지파는 미가의 우상을 강제로 빼앗은 후 평화로운 라이스를 약탈하며 점령합니다. 그런 다음 지파 차원의 우상숭배 체제를 공식적으로 구축합니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 21-24절</div>   미가는 빼앗긴 우상을 되찾으려고 단 지파를 추격하면서 “내가 만든 신들을 빼앗아 갔다”고 울부짖었습니다. 거금을 들여 만든 신은 무능하게도 미가는커녕 제 몸 하나 지키지 못했습니다. 우리 역시 하나님을 계시된 대로 믿지 않고 내 뜻대로 규정하여 섬긴다면, 미가와 다를 바 없습니다. 내 입맛대로 편집한 ‘하나님’은 위기 앞에 무능한 우상일 뿐입니다. 내가 상상해 낸 하나님 말고, 말씀에 계시된 하나님을 바르게 알고 온전히 섬깁시다.<br><div class="verse-point">📍 25-26절</div>   단 지파는 항의하는 미가를 협박해 돌려보냈습니다. 공의와 율법을 완전히 무시하고, 오직 무력과 힘의 논리로 약자의 것을 강탈한 것입니다. 하나님의 통치가 사라진 자리는 이처럼 ‘힘이 곧 정의’라는 세상의 거친 논리로 채워지기 마련입니다. 주님이 주신 힘과 권세를 사적인 탐욕과 억압의 도구로 휘두른다면, 우리는 복음의 통로가 아니라, 또 다른 압제자가 될 뿐입니다.<br><div class="verse-point">📍 27-29절</div>   단 지파는 평화롭던 라이스 사람들을 학살하고 그곳을 정복해 ‘단’이라 불렀습니다. 대적이 두려워 사명의 땅을 포기한 자들이 무고한 백성을 쳐서 이익을 취한 비겁하고 이기적인 승리였습니다. 사명의 자리에서 도망친 자들이 약자를 짓밟고 얻은 성공은 결코 하나님의 복일 수 없습니다. 공의 없이 내 편의와 이익만을 위해 타인의 평화를 무너뜨리는 확장은 탐욕이 낳은 부끄러운 전리품일 뿐입니다.<br><div class="verse-point">📍 30-31절</div>   단 지파는 우상을 세우고 미가의 집에서 데려온 레위 청년을 제사장으로 삼아 지파 차원의 우상숭배를 공식화했습니다. 그런데 충격적이게도 그 레위인은 모세의 자손이었습니다. 모세의 직계 후손이 도리어 우상숭배의 수장이 된 사실은 신앙의 유산이 얼마나 무참히 붕괴될 수 있는지 보여 줍니다. 게다가 그들은 실로의 성막을 무시한 채, 자신들의 편의를 위해 우상 성소를 따로 세웠습니다. 말씀보다 자기 소견을, 하나님의 뜻보다 자기 욕망을 따른 결과는 ‘그 땅 백성이 사로잡히는’ 멸망이었습니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>삶 속에 관습처럼 굳어진 우상숭배의 조각을 청산하고, 주님의 말씀만을 따르게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>현재 전 세계적으로 약 11억 명이 도시 내 빈민가에 살고 있다. 도시 빈민 선교가 일회성 구호나 지원이 아니라 진정성 있는 관계 형성을 기반으로 열매를 맺어 가도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Faith Departed from the Word</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-06<br>
+                <strong>Passage :</strong> 사사기(Judges) 18:21 - 18:31
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So they turned and departed, putting the little ones and the livestock and the goods in front of them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.22</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">When they had gone a distance from the home of Micah, the men who were in the houses near Micah's house were called out, and they overtook the people of Dan.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.23</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they shouted to the people of Dan, who turned around and said to Micah, "What is the matter with you, that you come with such a company?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.24</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he said, "You take my gods that I made and the priest, and go away, and what have I left? How then do you ask me, 'What is the matter with you?'"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.25</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Dan said to him, "Do not let your voice be heard among us, lest angry fellows fall upon you, and you lose your life with the lives of your household."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.26</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the people of Dan went their way. And when Micah saw that they were too strong for him, he turned and went back to his home.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.27</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But the people of Dan took what Micah had made, and the priest who belonged to him, and they came to Laish, to a people quiet and unsuspecting, and struck them with the edge of the sword and burned the city with fire.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.28</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And there was no deliverer because it was far from Sidon, and they had no dealings with anyone. It was in the valley that belongs to Beth-rehob. Then they rebuilt the city and lived in it.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.29</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they named the city Dan, after the name of Dan their ancestor, who was born to Israel; but the name of the city was Laish at the first.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.30</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Dan set up the carved image for themselves, and Jonathan the son of Gershom, son of Moses, and his sons were priests to the tribe of the Danites until the day of the captivity of the land.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.31</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So they set up Micah's carved image that he made, as long as the house of God was at Shiloh.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>After taking the idols’ images, the ephod, and the young priest from Micah’s house, the tribe of Dan marched to Laish. They thought they could use the idols and the priest to justify their invasion of Laish. Micah chased after them but was threatened by the people of Dan and forced to turn back empty-handed. The tribe of Dan annihilated the people of Laish, who had been living peacefully, and burned their city. Then, they built a new city and named it Dan, and instead of worshipping in the house of God at Shiloh, they set up the idol images and worshipped according to their own way.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 21-31</div>The tribe of Dan abandoned their portion and seized land that seemed good in their eyes. Instead of seeking out the house of God in Shiloh, they built their own idol houses and appointed their own priests to worship in their own way. If we start to follow our desires rather than God’s Word, we can end up living in a manner that is far from what God desires of us. Am I following God’s Word rather than my own beliefs and profit?<br><div class="verse-point">📍 VV. 27-31</div>The tribe of Dan tried to use a priest to legitimise their actions, and the priest approved their evil deeds for monetary gain. Power and religion grow corrupt when we compromise for the sake of money and self-justification. No rank or reputation can protect us from temptation. Let’s be careful not to use our meditation on the Word as a means of excusing evil or siding with injustice.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me not to use your Word as a means to justify my greed or evil deeds.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
