@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 어느 노인의 환대</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 어느 노인의 환대</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-08<br>
+                <strong>본문 :</strong> 사사기(Judges) 19:11 - 19:21
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 여부스에 가까이 갔을 때에 해가 지려 하는지라 종이 주인에게 이르되 청하건대 우리가 돌이켜 여부스 사람의 이 성읍에 들어가서 유숙하십시다 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">주인이 그에게 이르되 우리가 돌이켜 이스라엘 자손에게 속하지 아니한 이방 사람의 성읍으로 들어갈 것이 아니니 기브아로 나아가리라 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">또 그 종에게 이르되 우리가 기브아나 라마 중 한 곳에 가서 거기서 유숙하자 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">모두 앞으로 나아가더니 베냐민에 속한 기브아에 가까이 이르러 해가 진지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">기브아에 가서 유숙하려고 그리로 돌아 들어가서 성읍 넓은 거리에 앉아 있으나 그를 집으로 영접하여 유숙하게 하는 자가 없었더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">저녁 때에 한 노인이 밭에서 일하다가 돌아오니 그 사람은 본래 에브라임 산지 사람으로서 기브아에 거류하는 자요 그 곳 사람들은 베냐민 자손이더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">노인이 눈을 들어 성읍 넓은 거리에 나그네가 있는 것을 본지라 노인이 묻되 그대는 어디로 가며 어디서 왔느냐 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 그에게 이르되 우리는 유다 베들레헴에서 에브라임 산지 구석으로 가나이다 나는 그 곳 사람으로서 유다 베들레헴에 갔다가 이제 여호와의 집으로 가는 중인데 나를 자기 집으로 영접하는 사람이 없나이다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리에게는 나귀들에게 먹일 짚과 여물이 있고 나와 당신의 여종과 당신의 종인 우리들과 함께 한 청년에게 먹을 양식과 포도주가 있어 무엇이든지 부족함이 없나이다 하는지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 노인이 이르되 그대는 안심하라 그대의 쓸 것은 모두 내가 담당할 것이니 거리에서는 유숙하지 말라 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그를 데리고 자기 집에 들어가서 나귀에게 먹이니 그들이 발을 씻고 먹고 마시니라</div></div></div></div>
+            <hr>
+            <div class="content-area">레위인 일행이 베냐민 자손의 성읍 기브아에 이르러 묵을 곳을 찾지 못해 방황하고 있을 때 에브라임 출신의 한 노인이 그들을 환대합니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 11-14절</div>   첩을 데리고 집으로 돌아가던 중 날이 저물자, 종은 이방 성읍인 여부스에 머물자고 제안했습니다. 하지만 레위인은 거룩함을 지킨다는 명분을 내세우며 이방인을 피해 이스라엘 지파의 땅인 기브아로 향했습니다. 이미 첩을 두어 이방인처럼 살고 있으면서도, 거룩을 가장하며 위선을 떤 것입니다. 우리 역시 본질적인 불순종을 가린 채, 몇 가지 종교적 규칙을 지키는 것으로 스스로 거룩하다고 착각하지 않는지 돌아봐야 합니다.<br><div class="verse-point">📍 15절</div>   레위인 일행은 저녁이 되어 베냐민에 속한 기브아에 도착했습니다. 그러나 동족 중 누구도 그들을 영접해 숙소를 제공하지 않았습니다. 나그네를 환대하는 것은 하나님 백성의 마땅한 의무(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;lev&quot;, &quot;verse&quot;: &quot;19:33-34&quot;, &quot;label&quot;: &quot;레위기 19장 33절 ~ 34절&quot;}]', '사사기 (레 19:33-34)', 'kr')">레 19:33-34</span>)임에도, 기브아에는 이웃 사랑을 실천하는 사람이 한 사람도 없었습니다. 참된 왕이 없던 사사 시대는 이처럼 경건도, 도덕도, 환대도 실종된 완악한 시대였습니다.<br><div class="verse-point">📍 16-21절</div>   모든 기브아 주민이 레위인 일행을 외면하고 있을 때, 기브아에 체류 중이던 에브라임 출신의 한 노인이 일행을 맞이해 극진히 대접했습니다. 노인은 그들에게 양식이 넉넉히 있다는 말을 듣고도 친히 모든 필요를 공급하겠다고 약속했습니다. 노인 역시 그 땅의 나그네였지만, 기브아 주민들보다 도리어 참된 환대의 본을 보여 주었습니다. 지금 우리는 치열한 생존 경쟁 가운데 이웃을 향한 무관심 속에서 살아가고 있습니다. 내게 유익해서가 아니라, 내 도움이 필요하기에 기꺼이 곁을 내주고 도와주어야 할 이웃은 누구인지 돌아봅시다.<br><div class="verse-point">📍 18절</div>   레위인은 노인에게 자신이 ‘여호와의 집’으로 가는 중이라고 소개했습니다. 첩을 데려간다는 부끄러운 진실을 숨긴 채, 성전 봉사자라는 경건한 신분만 내세운 것입니다. 정말 성전을 사모했다면 장인의 집에서 허송세월하다 늦게 출발하지도 않았을 것입니다. 하나님 앞에서 부끄럽게 살면서 사람들 앞에서 아무리 경건한 체해 봐야 소용없습니다. 사람을 속일 수는 있어도, 하나님을 속일 수는 없습니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>피곤하고 지친 이웃을 돌아보며 대접할 줄 아는 사랑의 마음을 주소서.<br><div class="pray-item"><b>🔹 열방</b></div>자메이카인들이 중시하는 건강한 가족 관계와 자녀 교육의 가치관 뒤에 교회의 크고 선한 영향력이 자리하고 있음이 드러났다. 앞으로도 자메이카 교회가 선한 영향력을 이어 가도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: A Cold and Warm Reception</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-08<br>
+                <strong>Passage :</strong> 사사기(Judges) 19:11 - 19:21
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">When they were near Jebus, the day was nearly over, and the servant said to his master, "Come now, let us turn aside to this city of the Jebusites and spend the night in it."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And his master said to him, "We will not turn aside into the city of foreigners, who do not belong to the people of Israel, but we will pass on to Gibeah."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he said to his young man, "Come and let us draw near to one of these places and spend the night at Gibeah or at Ramah."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So they passed on and went their way. And the sun went down on them near Gibeah, which belongs to Benjamin,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and they turned aside there, to go in and spend the night at Gibeah. And he went in and sat down in the open square of the city, for no one took them into his house to spend the night.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And behold, an old man was coming from his work in the field at evening. The man was from the hill country of Ephraim, and he was sojourning in Gibeah. The men of the place were Benjaminites.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he lifted up his eyes and saw the traveler in the open square of the city. And the old man said, "Where are you going? And where do you come from?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he said to him, "We are passing from Bethlehem in Judah to the remote parts of the hill country of Ephraim, from which I come. I went to Bethlehem in Judah, and I am going to the house of the Lord, but no one has taken me into his house.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">We have straw and feed for our donkeys, with bread and wine for me and your female servant and the young man with your servants. There is no lack of anything."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the old man said, "Peace be to you; I will care for all your wants. Only, do not spend the night in the square."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So he brought him into his house and gave the donkeys feed. And they washed their feet, and ate and drank.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>After setting out at a difficult hour, the Levite and his company could not get very far before having to stop because of the darkness. His servant suggested staying in the nearby Jebus, but the Levite believed it would be safer to dwell among fellow Israelites rather than foreigners and headed to Gibeah. However, when he arrived after sunset, no one was willing to take him in until an old man returning from his work in the field approached him. The old man, who was also from Ephraim, led the Levite to his house and offered him feed for his donkey, water for washing, and food to eat.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 14-15</div>Gibeah treated a fellow Israelite more coldly than a foreign city. The Israelites were commanded by God to welcome sojourners, but not a single Israelite stepped up to do so. How am I greeting and serving strangers or people who have fallen on hard times?<br><div class="verse-point">📍 VV. 16-21</div>An old man from Ephraim, who was residing in Gibeah, welcomed the Levite and his company into his home and treated them generously. The people of Gibeah did not follow God’s command to welcome sojourners, but a sojourner was kind to another sojourner. If we become overly concerned with calculating our losses and sacrifices concerning God’s work, we may fail to fulfil our duties and face shame.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me not to ignore neighbours who need help but serve them by approaching them first.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"lev_19": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
