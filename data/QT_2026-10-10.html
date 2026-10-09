@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 조작된 정의</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 조작된 정의</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-10<br>
+                <strong>본문 :</strong> 사사기(Judges) 20:1 - 20:7
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 모든 이스라엘 자손이 단에서부터 브엘세바까지와 길르앗 땅에서 나와서 그 회중이 일제히 미스바에서 여호와 앞에 모였으니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">온 백성의 어른 곧 이스라엘 모든 지파의 어른들은 하나님 백성의 총회에 섰고 칼을 빼는 보병은 사십만 명이었으며</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 자손이 미스바에 올라간 것을 베냐민 자손이 들었더라 이스라엘 자손이 이르되 이 악한 일이 어떻게 일어났는지 우리에게 말하라 하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">레위 사람 곧 죽임을 당한 여인의 남편이 대답하여 이르되 내가 내 첩과 더불어 베냐민에 속한 기브아에 유숙하러 갔더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">기브아 사람들이 나를 치러 일어나서 밤에 내가 묵고 있던 집을 에워싸고 나를 죽이려 하고 내 첩을 욕보여 그를 죽게 한지라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 내 첩의 시체를 거두어 쪼개서 이스라엘 기업의 온 땅에 보냈나니 이는 그들이 이스라엘 중에서 음행과 망령된 일을 행하였기 때문이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 자손들아 너희가 다 여기 있은즉 너희의 의견과 방책을 낼지니라 하니라</div></div></div></div>
+            <hr>
+            <div class="content-area">토막 난 시신을 보고 분개한 이스라엘은 문제 해결을 위해 미스바에 집결하지만, 참된 회개나 하나님의 뜻을 구함 없이 레위인의 왜곡된 고발에 선동됩니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2>1-2절   ‘단에서부터 브엘세바까지’는 이스라엘의 북쪽 끝에서 남쪽 끝까지를, ‘길르앗 땅’은 요단 동편의 지파들을 뜻합니다. 온 이스라엘 백성이 미스바에 한 사람같이 일사불란하게 모여 40만 명의 거대한 대군을 이뤘습니다. 하나님이 주신 사명이나 개혁에 있어서는 그토록 분열하고 방관하던 지파들이, 동족을 향한 복수를 위해서는 놀라운 결속력을 발휘한 것입니다. 명분은 ‘여호와 앞, 하나님 백성의 총회’였지만, 정작 하나님의 뜻을 묻는 눈물의 기도나, 자신들의 타락에 대한 회개는 없었습니다. 거창한 종교적 외형을 갖추고 정의를 부르짖지만, 실상은 신앙으로 포장한 인간적인 분노와 보복 심리의 표출이었습니다.<br>3a절   총회가 열린 미스바는 베냐민 지파의 성읍인 기브아와 불과 수킬로미터밖에 떨어지지 않은 인접 지역입니다. 베냐민 자손은 이 대대적인 군사 집결 소식을 똑똑히 들었음에도 총회에 참석하지 않았습니다. 자신들의 성읍에서 벌어진 끔찍한 범죄를 조사하고 징계하기보다, 가해자를 감싸고도는 ‘지파 이기주의’를 선택한 것입니다. 공동체의 거룩함을 회복하는 일보다 내 식구, 내 집단의 이익과 체면을 먼저 챙기려는 고질적인 집단 이기주의입니다. 죄를 공의롭게 다루기보다 무조건 덮어 주고 감싸려는 뒤틀린 온정주의는 결국 공동체 전체를 비극적인 파멸로 몰아넣는 씨앗이 됩니다.<br>3b-7절   사건의 전말을 묻는 회중에게 레위인은 기브아 사람들이 자신을 죽이려 했고, 자신의 첩을 욕보여 죽였다고 보고했습니다. 이는 마치 자신이 죽음의 위협에 처해 있어 변을 당하는 아내를 미처 돌보지 못한 것처럼 교묘하게 꾸며낸 진술이었습니다. 자신의 안위를 위해 여자를 내어주고 밤새 편히 쉬었던 사실은 철저히 은폐한 채, 자신이 가장 괴로운 피해자인 것처럼 사실을 왜곡한 것입니다. 이렇듯 내게 유리한 사실만을 앞세워 타인을 악마화하고 자신을 공의로운 피해자로 둔갑시키는 행태는 공동체를 더 큰 파멸과 분열로 몰아갑니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>우리 앞에 놓인 문제의 원인을 바르게 진단하고 해결할 수 있도록 도와주소서.<br><div class="pray-item"><b>🔹 열방</b></div>중국 당국이 조선족 가이드 500명을 별도로 교육하는 등 북한 접경 지역에서 선교활동 감시를 강화하고 있다. 한국선교사들이 종교 활동 제한 조치를 잘 숙지하고 안전하게 사역하도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Assembly at Mizpah</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-10<br>
+                <strong>Passage :</strong> 사사기(Judges) 20:1 - 20:7
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then all the people of Israel came out, from Dan to Beersheba, including the land of Gilead, and the congregation assembled as one man to the LORD at Mizpah.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the chiefs of all the people, of all the tribes of Israel, presented themselves in the assembly of the people of God, 400,000 men on foot that drew the sword.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">(Now the people of Benjamin heard that the people of Israel had gone up to Mizpah.) And the people of Israel said, "Tell us, how did this evil happen?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the Levite, the husband of the woman who was murdered, answered and said, "I came to Gibeah that belongs to Benjamin, I and my concubine, to spend the night.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the leaders of Gibeah rose against me and surrounded the house against me by night. They meant to kill me, and they violated my concubine, and she is dead.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So I took hold of my concubine and cut her in pieces and sent her throughout all the country of the inheritance of Israel, for they have committed abomination and outrage in Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Behold, you people of Israel, all of you, give your advice and counsel here."</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>After receiving the body parts of the woman scattered by the Levite, the Israelites assembled at Mizpah. The people, who had hesitated over fighting pagan nations, gathered without delay to punish one of their tribes. All the leaders and 400,000 men in the infantry gathered, and the tribe of Benjamin heard about it. The Levite omitted the parts that were unfavourable to him and only emphasised the wicked actions of the people of Gibeah. Israel tried to decide how to handle the matter based on a one-sided account.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 1-2</div>Israel became firmly united to fight one of their own tribes. However, the incident at hand wasn’t just an issue concerning one tribe but a reflection of the spiritual corruption and cruelty that had spread across all of Israel. We should reflect on ourselves to see if we are not pointing out other people’s flaws while resting easy because our own sins are concealed.<br><div class="verse-point">📍 VV. 4-7</div>The Levite hid his own sin and made himself out to be just a victim. The truth can be distorted by how the facts are presented, and a small incident can grow into something much bigger. Let’s not hastily judge anything or blow situations out of proportion but carefully consider the whole story and wisely discern the truth through the lens of God’s Word.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help us to only march as a united body for the sake of your name and kingdom.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
