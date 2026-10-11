@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 폭주하는 칼날</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 폭주하는 칼날</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-12<br>
+                <strong>본문 :</strong> 사사기(Judges) 20:29 - 20:48
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">29절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘이 기브아 주위에 군사를 매복하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">30절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 자손이 셋째 날에 베냐민 자손을 치러 올라가서 전과 같이 기브아에 맞서 전열을 갖추매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">31절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">베냐민 자손이 나와서 백성을 맞더니 꾀임에 빠져 성읍을 떠났더라 그들이 큰 길 곧 한쪽은 벧엘로 올라가는 길이요 한쪽은 기브아의 들로 가는 길에서 백성을 쳐서 전과 같이 이스라엘 사람 삼십 명 가량을 죽이기 시작하며</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">32절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">베냐민 자손이 스스로 이르기를 이들이 처음과 같이 우리 앞에서 패한다 하나 이스라엘 자손은 이르기를 우리가 도망하여 그들을 성읍에서 큰 길로 꾀어내자 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">33절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 사람이 모두 그들의 처소에서 일어나서 바알다말에서 전열을 갖추었고 이스라엘의 복병은 그 장소 곧 기브아 초장에서 쏟아져 나왔더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">34절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">온 이스라엘 사람 중에서 택한 사람 만 명이 기브아에 이르러 치매 싸움이 치열하나 베냐민 사람은 화가 자기에게 미친 줄을 알지 못하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">35절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와께서 이스라엘 앞에서 베냐민을 치시매 당일에 이스라엘 자손이 베냐민 사람 이만 오천백 명을 죽였으니 다 칼을 빼는 자였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">36절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 베냐민 자손이 자기가 패한 것을 깨달았으니 이는 이스라엘 사람이 기브아에 매복한 군사를 믿고 잠깐 베냐민 사람 앞을 피하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">37절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">복병이 급히 나와 기브아로 돌격하고 나아가며 칼날로 온 성읍을 쳤음이더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">38절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">처음에 이스라엘 사람과 복병 사이에 약속하기를 성읍에서 큰 연기가 치솟는 것으로 군호를 삼자 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">39절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 사람은 싸우다가 물러가고 베냐민 사람은 이스라엘 사람 삼십 명 가량을 쳐죽이기를 시작하며 이르기를 이들이 틀림없이 처음 싸움 같이 우리에게 패한다 하다가</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">40절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">연기 구름이 기둥 같이 성읍 가운데에서 치솟을 때에 베냐민 사람이 뒤를 돌아보매 온 성읍에 연기가 하늘에 닿았고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">41절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 사람은 돌아서는지라 베냐민 사람들이 화가 자기들에게 미친 것을 보고 심히 놀라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">42절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 사람 앞에서 몸을 돌려 광야 길로 향하였으나 군사가 급히 추격하며 각 성읍에서 나온 자를 그 가운데에서 진멸하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">43절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 베냐민 사람을 에워싸고 기브아 앞 동쪽까지 추격하며 그 쉬는 곳에서 짓밟으매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">44절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">베냐민 중에서 엎드러진 자가 만 팔천 명이니 다 용사더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">45절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그들이 몸을 돌려 광야로 도망하였으나 림몬 바위에 이르는 큰 길에서 이스라엘이 또 오천 명을 이삭 줍듯 하고 또 급히 그 뒤를 따라 기돔에 이르러 또 이천 명을 죽였으니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">46절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이 날에 베냐민 사람으로서 칼을 빼는 자가 엎드러진 것이 모두 이만 오천 명이니 다 용사였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">47절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">베냐민 사람 육백 명이 돌이켜 광야로 도망하여 림몬 바위에 이르러 거기에서 넉 달 동안을 지냈더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">48절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이스라엘 사람이 베냐민 자손에게로 돌아와서 온 성읍과 가축과 만나는 자를 다 칼날로 치고 닥치는 성읍은 모두 다 불살랐더라</div></div></div></div>
+            <hr>
+            <div class="content-area">이스라엘 연합군은 매복 작전으로 승리하지만, 가나안 족속을 진멸하듯 베냐민 지파를 학살하고 성읍을 불사릅니다. 결국 한 지파가 거의 멸절하는 지경에 이릅니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 29-35절</div>   이스라엘이 세 번째 싸움에 나서면서 기브아 사면에 복병을 배치하는 전략으로 마침내 베냐민 지파를 이기지만, ‘이스라엘 앞에서 베냐민을 치신 분’은 하나님입니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;20:35&quot;, &quot;label&quot;: &quot;사사기 20장 35절&quot;}]', '사사기 (35절)', 'kr')">35절</span>). 하나님은 이스라엘이 패배를 통해 스스로 무능함을 깨닫고 눈물로 금식하며 엎드릴 때 비로소 승리의 문을 열어 주셨습니다. 그러나 이 승리는 결코 축제가 될 수 없는 엄중한 심판입니다. 하나님은 죄악을 품고도 뉘우치지 않는 기브아와 그들을 맹목적으로 두둔한 베냐민 지파의 불의를 ‘동족 이스라엘’이라는 몽둥이로 단호하게 심판하셨습니다. 하나님은 자기 백성이라 할지라도 죄를 결코 가볍게 넘기지 않으십니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 36-46절</div>   이스라엘 연합군이 유인 작전으로 슬금슬금 후퇴하자, 베냐민 지파는 성급하게 승리를 확신했습니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;jdgs&quot;, &quot;verse&quot;: &quot;20:39&quot;, &quot;label&quot;: &quot;사사기 20장 39절&quot;}]', '사사기 (39절)', 'kr')">39절</span>). 앞선 두 번의 전투에서 거둔 승리에 눈이 멀어, 성읍 뒤편에 배치된 복병을 보지 못한 것입니다. 성읍 전체가 불타오르는 연기가 하늘에 닿자, 그들은 재앙이 닥친 것을 깨닫고 경악하며 광야로 도망치지만 이미 때는 늦었습니다. 가장 위험한 순간은 내 뜻대로 모든 일이 잘 풀리고 있다고 착각할 때입니다. 과거의 성공 방식이나 내 경험을 과신할 때, 은밀한 유혹의 복병에 당하기 쉽습니다. 늘 깨어 분별하지 않으면, 한때의 승리가 영원한 패망의 덫이 될 수 있습니다.<br><div class="verse-point">📍 47-48절</div>   베냐민 지파 중 겨우 600명만 살아남아 림몬 바위로 도망쳤습니다. 이스라엘 연합군은 여기서 멈추었어야 했습니다. 그러나 승리에 도취된 그들은 베냐민의 모든 성읍으로 돌아가 남은 사람과 가축을 가리지 않고 칼날로 쳤으며, 보이는 성읍마다 불살라 버렸습니다. 이는 가나안 우상 숭배자들에게나 행하던 ‘진멸’ 의식을 동족에게 쏟아 부은 끔찍한 일입니다. 분노에 눈이 멀면 ‘정의 실현’이라는 명분 아래 자신도 모르게 또 다른 악을 행하기 쉽습니다. 죄는 단호하게 끊어 내야 하지만, 그 과정에서 하나님의 긍휼을 잃어버리면 정의의 이름으로 또 다른 비극을 낳게 됩니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>하나님의 정의를 위한다고 나설 때, 하나님의 긍휼을 놓치지 않게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>일본 사회는 세속화된 듯 보이지만, 일상 곳곳에는 전통 종교 의례와 문화적 종교성이 짙게 배어 있어 복음전도가 쉽지 않다. 혼합주의 세계관에 갇힌 일본인들에게 하나님의 빛이 비치도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: The Fall of the Tribe of Benjamin</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-12<br>
+                <strong>Passage :</strong> 사사기(Judges) 20:29 - 20:48
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.29</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So Israel set men in ambush around Gibeah.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.30</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Israel went up against the people of Benjamin on the third day and set themselves in array against Gibeah, as at other times.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.31</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Benjamin went out against the people and were drawn away from the city. And as at other times they began to strike and kill some of the people in the highways, one of which goes up to Bethel and the other to Gibeah, and in the open country, about thirty men of Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.32</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Benjamin said, "They are routed before us, as at the first." But the people of Israel said, "Let us flee and draw them away from the city to the highways."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.33</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And all the men of Israel rose up out of their place and set themselves in array at Baal-tamar, and the men of Israel who were in ambush rushed out of their place from Maareh-geba.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.34</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And there came against Gibeah 10,000 chosen men out of all Israel, and the battle was hard, but the Benjaminites did not know that disaster was close upon them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.35</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the LORD defeated Benjamin before Israel, and the people of Israel destroyed 25,100 men of Benjamin that day. All these were men who drew the sword.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.36</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So the people of Benjamin saw that they were defeated. The men of Israel gave ground to Benjamin, because they trusted the men in ambush whom they had set against Gibeah.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.37</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the men in ambush hurried and rushed against Gibeah; the men in ambush moved out and struck all the city with the edge of the sword.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.38</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Now the appointed signal between the men of Israel and the men in the main ambush was that when they made a great cloud of smoke rise up out of the city</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.39</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">the men of Israel should turn in battle. Now Benjamin had begun to strike and kill about thirty men of Israel. They said, "Surely they are defeated before us, as in the first battle."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.40</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But when the signal began to rise out of the city in a column of smoke, the Benjaminites looked behind them, and behold, the whole of the city went up in smoke to heaven.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.41</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the men of Israel turned, and the men of Benjamin were dismayed, for they saw that disaster was close upon them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.42</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Therefore they turned their backs before the men of Israel in the direction of the wilderness, but the battle overtook them. And those who came out of the cities were destroying them in their midst.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.43</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Surrounding the Benjaminites, they pursued them and trod them down from Nohah as far as opposite Gibeah on the east.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.44</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Eighteen thousand men of Benjamin fell, all of them men of valor.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.45</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they turned and fled toward the wilderness to the rock of Rimmon. Five thousand men of them were cut down in the highways. And they were pursued hard to Gidom, and 2,000 men of them were struck down.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.46</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So all who fell that day of Benjamin were 25,000 men who drew the sword, all of them men of valor.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.47</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But 600 men turned and fled toward the wilderness to the rock of Rimmon and remained at the rock of Rimmon four months.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.48</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the men of Israel turned back against the people of Benjamin and struck them with the edge of the sword, the city, men and beasts and all that they found. And all the towns that they found they set on fire.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>The Israelites gained victory in battle not because of their superior strategy, but because God had promised them victory and had struck down Benjamin. Israel set up an ambush around Gibeah, while the main force pretended to retreat, luring the people of Benjamin far away from the city. Meanwhile, the troops lying in ambush conquered Gibeah and set the city on fire, and Benjamin collapsed, caught between the two forces. A great number of the tribe of Benjamin were killed, and only 600 men survived by hiding at the rock of Rimmon. Israel returned to Gibeah to destroy the city.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 29-48</div>God fairly judged even the sins of his own people. He humbled the Israelites, who had grown sinful under the influence of the Canaanites, by making them suffer defeat twice, and he destroyed the tribe of Benjamin, who aligned themselves with the worthless fellows of Gibeah. He did so because they had lost their distinctiveness as God’s people, the identity of God’s people, and had come to resemble the Canaanites. We must not regard sins lightly before the righteous God but go before him with sincere repentance.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 39-41</div>After gaining victory twice, the tribe of Benjamin were confident they would win again and lowered their guard, only to face severe judgement. While they may have believed their victories proved their righteousness, sin cannot be resolved without repentance.   We must also not rest easy because of yesterday’s victories but reflect humbly on our sins and repent today.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help me not to treat your patience as a means of easing my guilt but respond with sincere repentance.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"jdgs_20": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
