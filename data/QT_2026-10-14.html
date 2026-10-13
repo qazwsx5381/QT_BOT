@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 이스라엘에 왕이 없으므로</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 이스라엘에 왕이 없으므로</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-14<br>
+                <strong>본문 :</strong> 사사기(Judges) 21:13 - 21:25
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">온 회중이 림몬 바위에 있는 베냐민 자손에게 사람을 보내어 평화를 공포하게 하였더니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 때에 베냐민이 돌아온지라 이에 이스라엘 사람이 야베스 길르앗 여자들 중에서 살려 둔 여자들을 그들에게 주었으나 아직도 부족하므로</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">백성들이 베냐민을 위하여 뉘우쳤으니 이는 여호와께서 이스라엘 지파들 중에 한 지파가 빠지게 하셨음이었더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">회중의 장로들이 이르되 베냐민의 여인이 다 멸절되었으니 이제 그 남은 자들에게 어떻게 하여야 아내를 얻게 할까 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">또 이르되 베냐민 중 도망하여 살아 남은 자에게 마땅히 기업이 있어야 하리니 그리하면 이스라엘 중에 한 지파가 사라짐이 없으리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그러나 우리가 우리의 딸을 그들의 아내로 주지 못하리니 이는 이스라엘 자손이 맹세하여 이르기를 딸을 베냐민에게 아내로 주는 자는 저주를 받으리라 하였음이로다 하니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">또 이르되 보라 벧엘 북쪽 르보나 남쪽 벧엘에서 세겜으로 올라가는 큰 길 동쪽 실로에 매년 여호와의 명절이 있도다 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">베냐민 자손에게 명령하여 이르되 가서 포도원에 숨어</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">보다가 실로의 여자들이 춤을 추러 나오거든 너희는 포도원에서 나와서 실로의 딸 중에서 각각 하나를 붙들어 가지고 자기의 아내로 삼아 베냐민 땅으로 돌아가라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">22절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">만일 그의 아버지나 형제가 와서 우리에게 시비하면 우리가 그에게 말하기를 청하건대 너희는 우리에게 은혜를 베풀어 그들을 우리에게 줄지니라 이는 우리가 전쟁할 때에 각 사람을 위하여 그의 아내를 얻어 주지 못하였고 너희가 자의로 그들에게 준 것이 아니니 너희에게 죄가 없을 것임이니라 하겠노라 하매</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">23절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">베냐민 자손이 그같이 행하여 춤추는 여자들 중에서 자기들의 숫자대로 붙들어 아내로 삼아 자기 기업에 돌아가서 성읍들을 건축하고 거기에 거주하였더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">24절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 때에 이스라엘 자손이 그 곳에서 각기 자기의 지파, 자기의 가족에게로 돌아갔으니 곧 각기 그 곳에서 나와서 자기의 기업으로 돌아갔더라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">25절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 때에 이스라엘에 왕이 없으므로 사람이 각기 자기의 소견에 옳은 대로 행하였더라</div></div></div></div>
+            <hr>
+            <div class="content-area">베냐민 지파의 소멸을 막기 위해 길르앗의 처녀들을 데려왔지만 그래도 여자의 수가 모자라자, 이스라엘은 다시 한번 기괴한 방법으로 그 수를 채웁니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 25절</div>   영원한 왕이십니다. 사사기를 마무리하며 저자는 사사 시대 모든 혼돈의 원인이 ‘왕의 부재’에 있다고 선언합니다. 이는 이스라엘의 왕정 시대를 예고하는 것을 넘어, 하나님을 진정한 왕으로 대접하지 않는 시대를 향한 깊은 탄식입니다. 내 삶의 모든 영역에서 하나님이 왕 되실 때 비로소 모든 것이 제자리를 찾습니다. 하나님 나라는 왕이신 주님의 말씀만이 온전히 서고, 인간의 악한 꾀는 무너지는 곳입니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 13-15절</div>   이스라엘이 림몬 바위에 숨은 베냐민 자손에게 평화를 선포하고 야베스 길르앗에서 데려온 여인들을 주었으나 여전히 수가 부족했습니다. 온 백성은 한 지파의 파멸을 보고 뒤늦게 슬퍼하며, 여호와께서 이스라엘 지파 중에 틈이 생기게 하셨다며 탄식합니다. 자신들의 혈기와 잘못된 맹세로 빚어진 참혹한 결과를 은근슬쩍 하나님 탓으로 돌리는 인간의 이중성입니다. 참된 회개는 상황을 원망하기에 앞서, 지금의 고통이 내 죄가 자초한 결과임을 정직하게 인정하는 데서 시작됩니다.<br><div class="verse-point">📍 16-21절</div>   아내의 수가 모자란 문제를 해결하기 위해 장로들은 매년 실로에서 열리는 여호와의 명절을 이용하자는 잔인한 꾀를 냈습니다. 매복해 있다가 축제에 춤추러 나오는 실로의 딸들을 납치하라는 것입니다. 기브아 불량배들의 만행을 징벌하려던 이스라엘 총회의 시작은 ‘정의’였으나, 그 끝은 동족상잔의 비극과 또 다른 폭력의 용인이었습니다. 하나님의 뜻을 떠난 인간의 정의가 얼마나 쉽게 괴물의 모습으로 돌변할 수 있는지 보여 줍니다.<br><div class="verse-point">📍 22-24절</div>   장로들은 실로의 가족들이 항의해 오면 “자의로 준 것이 아니니 너희에게 죄가 없다”라는 궤변으로 범죄를 무마할 방책까지 세워 주었습니다. 베냐민 지파가 여인들을 붙잡아 가자, 이스라엘은 그제야 문제가 해결되었다는 듯 집으로 돌아갑니다. 죄를 온전히 회개하기보다 얄팍한 타협으로 대충 덮어 버리려는 미봉책으로는 아무것도 해결되지 않습니다. 하나님 말씀을 잃어버린 채 고안해 내는 해결책은 공동체의 양심을 마비시킬 뿐입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>제 소견이 아니라 진정한 왕이신 주님의 말씀만이 제 삶의 유일한 기준이 되게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>인도 정부가 2026년 인구조사에 착수하면서 기독교로 개종한 이들의 고민이 깊어지고 있다. 그리스도인이라는 이유로 이들이 교육과 취업에서 차별당하지 않도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Everyone Did What Was Right in Their Own Eyes</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-14<br>
+                <strong>Passage :</strong> 사사기(Judges) 21:13 - 21:25
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the whole congregation sent word to the people of Benjamin who were at the rock of Rimmon and proclaimed peace to them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And Benjamin returned at that time. And they gave them the women whom they had saved alive of the women of Jabesh-gilead, but they were not enough for them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people had compassion on Benjamin because the LORD had made a breach in the tribes of Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the elders of the congregation said, "What shall we do for wives for those who are left, since the women are destroyed out of Benjamin?"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they said, "There must be an inheritance for the survivors of Benjamin, that a tribe not be blotted out from Israel.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Yet we cannot give them wives from our daughters." For the people of Israel had sworn, "Cursed be he who gives a wife to Benjamin."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So they said, "Behold, there is the yearly feast of the LORD at Shiloh, which is north of Bethel, on the east of the highway that goes up from Bethel to Shechem, and south of Lebonah."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And they commanded the people of Benjamin, saying, "Go and lie in ambush in the vineyards</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and watch. If the daughters of Shiloh come out to dance in the dances, then come out of the vineyards and snatch each man his wife from the daughters of Shiloh, and go to the land of Benjamin.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.22</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And when their fathers or their brothers come to complain to us, we will say to them, 'Grant them graciously to us, because we did not take for each man of them his wife in battle, neither did you give them to them, else you would now be guilty.'"</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.23</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Benjamin did so and took their wives, according to their number, from the dancers whom they carried off. Then they went and returned to their inheritance and rebuilt the towns and lived in them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.24</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And the people of Israel departed from there at that time, every man to his tribe and family, and they went out from there every man to his inheritance.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.25</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">In those days there was no king in Israel. Everyone did what was right in his own eyes.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>The assembly of Israel made peace with the people of Benjamin and gave them the women of Jabesh-gilead so the Benjamin line could continue. However, there were not enough women, so the elders came up with another solution. They advised Benjamin to kidnap the virgins who came to the feast at Shiloh. While trying to keep their oath, they caused others to commit evil. In an era without kings, the people of Israel each lived according to their own will and gradually drifted further away from God’s will.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 12-25</div>Even while looking for a way to preserve the tribe of Benjamin, Israel claimed they could not give their own daughters. They used their oath and curses as an excuse to avoid responsibility and tried to impose sacrifices on others. When our wrongdoing is clear, we must examine ourselves to see whether we are avoiding responsibility by using pious-sounding words.<br>19-24 To keep their oath of not giving their daughters as wives to the people of Benjamin, Israel came up with the bizarre solution of kidnapping women in Shiloh. Even while conspiring to commit another evil act during a holy feast, they considered themselves faithful to their oath. When faith is reduced to outward justification, we lose our ability to discern sin and grieve over it. We must examine ourselves to see if our faith has become reduced to clinging to formality and human reasoning.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, as you are the true king. Rule over me with your grace and truth so that I do not try to be king over my own life.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
