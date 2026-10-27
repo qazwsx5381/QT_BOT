@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 나의 힘이신 여호와</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 나의 힘이신 여호와</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-10-28<br>
+                <strong>본문 :</strong> 시편(Psalm) 18:1 - 18:15
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">나의 힘이신 여호와여 내가 주를 사랑하나이다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와는 나의 반석이시요 나의 요새시요 나를 건지시는 이시요 나의 하나님이시요 내가 그 안에 피할 나의 바위시요 나의 방패시요 나의 구원의 뿔이시요 나의 산성이시로다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 찬송 받으실 여호와께 아뢰리니 내 원수들에게서 구원을 얻으리로다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">사망의 줄이 나를 얽고 불의의 창수가 나를 두렵게 하였으며</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">스올의 줄이 나를 두르고 사망의 올무가 내게 이르렀도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 환난 중에서 여호와께 아뢰며 나의 하나님께 부르짖었더니 그가 그의 성전에서 내 소리를 들으심이여 그의 앞에서 나의 부르짖음이 그의 귀에 들렸도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이에 땅이 진동하고 산들의 터도 요동하였으니 그의 진노로 말미암음이로다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그의 코에서 연기가 오르고 입에서 불이 나와 사름이여 그 불에 숯이 피었도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 또 하늘을 드리우시고 강림하시니 그의 발 아래는 어두캄캄하도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그룹을 타고 다니심이여 바람 날개를 타고 높이 솟아오르셨도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 흑암을 그의 숨는 곳으로 삼으사 장막 같이 자기를 두르게 하심이여 곧 물의 흑암과 공중의 빽빽한 구름으로 그리하시도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그 앞에 광채로 말미암아 빽빽한 구름이 지나며 우박과 숯불이 내리도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">여호와께서 하늘에서 우렛소리를 내시고 지존하신 이가 음성을 내시며 우박과 숯불을 내리시도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그의 화살을 날려 그들을 흩으심이여 많은 번개로 그들을 깨뜨리셨도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이럴 때에 여호와의 꾸지람과 콧김으로 말미암아 물 밑이 드러나고 세상의 터가 나타났도다</div></div></div></div>
+            <hr>
+            <div class="content-area">사무엘하 22장의 쌍둥이 본문으로, 다윗이 사울과 원수들을 이기고 감사함으로 부른 노래입니다. 다윗은 친히 내려오셔서 원수에게 진노하시며 구원을 베푸시는 주님을 고백합니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 1절</div>   모든 자원이 고갈된 시인에게 힘이 되어 주십니다. 다윗은 사울과 압살롬 같은 내부의 적들, 그리고 블레셋 사람 같은 외부의 적들과의 오랜 싸움으로 모든 힘을 소진한 상태였지만 하나님이 그의 힘이 되어 주시니 승리의 노래를 부를 수 있었습니다. 피로사회를 살아가는 우리에게도 하나님이 힘의 원천이 되어 주십니다. 내 안의 모든 힘이 바닥났을 때라도 우리는 하나님이 공급해 주시는 자원으로 계속 버텨 낼 수 있습니다.<br><div class="verse-point">📍 2-3절</div>   반석, 요새, 피할 바위, 방패, 구원의 뿔, 산성과 같은 안전지대가 되어 주십니다. 다윗이 사용한 은유들은 모두 치열한 전쟁터의 생존 언어들로, 삶의 위기 속에서 하나님의 도움을 입은 경험이 겹겹이 쌓여 만들어진 고백입니다. 불안한 관계와 건강, 불확실한 미래에 대한 두려움으로 이리저리 흔들리기 쉬운 요즘, 흔들리지 않는 하나님에 대한 은유들을 묵상합시다. 어떤 상황에서든지 확실한 안전 기지가 되시는 하나님의 도움을 의지하여 오늘 하루의 모험을 시작합시다.<br><div class="verse-point">📍 4-6절</div>   심각한 죽음의 위협에 휩싸인 시인의 부르짖음을 들어주십니다. 시인은 존재 자체가 소멸할 위기 앞에서도 도움을 구하는 자신의 절박한 소리를 하나님이 들으시고 응답하러 오신다는 것을 믿었습니다. 그랬기에 죽음의 위협이 자신을 칭칭 옭아매어 무덤으로 끌고 가는 것만 같은 두려움 속에서도 소리 내어 말할 수 있었습니다. 하나님은 지금 내 존재가 내는 모든 소리에 여전히 귀를 기울이고 계십니다.<br><div class="verse-point">📍 7-15절</div>   세계 역사에 적극 개입하셔서 자기 백성을 돌보십니다. 하나님은 취약하기 그지없는 인생의 기도에 응답하기 위해 땅을 흔들고, 적들을 흩으시고, 바다의 밑바닥을 드러내시며 강렬한 위용을 떨치십니다. 우리의 기도에 기계적으로 응답하시지 않고, 빛나는 광채와 빽빽한 구름, 나타남과 숨김의 긴장 속에서 사람들이 예상치 못한 시간에 신비로운 방식으로 나타나십니다. 우리의 범주를 넘어 일하시는 하나님의 신비를 신뢰하며, 다만 긴장 속에서 하나님을 경배할 뿐입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>모든 것이 흔들리는 세계에서 흔들리지 않는 하나님의 사랑 안에 굳게 서게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>재정적 어려움과 깊어지는 고립감으로 인해 최근 뉴질랜드의 사회적 결속력이 절반 수준에 그치고 있다. 지역교회와 그리스도인들이 다리가 되어 세대와 문화, 계층을 연결해 나가도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: My God, My Love</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-10-28<br>
+                <strong>Passage :</strong> 시편(Psalm) 18:1 - 18:15
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">[To the choirmaster. A Psalm of David, the servant of the LORD, who addressed the words of this song to the LORD on the day when the LORD rescued him from the hand of all his enemies, and from the hand of Saul. He said:] I love you, O LORD, my strength.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">The LORD is my rock and my fortress and my deliverer, my God, my rock, in whom I take refuge, my shield, and the horn of my salvation, my stronghold.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">I call upon the LORD, who is worthy to be praised, and I am saved from my enemies.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">The cords of death encompassed me; the torrents of destruction assailed me;</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">the cords of Sheol entangled me; the snares of death confronted me.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">In my distress I called upon the LORD; to my God I cried for help. From his temple he heard my voice, and my cry to him reached his ears.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the earth reeled and rocked; the foundations also of the mountains trembled and quaked, because he was angry.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Smoke went up from his nostrils, and devouring fire from his mouth; glowing coals flamed forth from him.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">He bowed the heavens and came down; thick darkness was under his feet.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">He rode on a cherub and flew; he came swiftly on the wings of the wind.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">He made darkness his covering, his canopy around him, thick clouds dark with water.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Out of the brightness before him hailstones and coals of fire broke through his clouds.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">The LORD also thundered in the heavens, and the Most High uttered his voice, hailstones and coals of fire.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And he sent out his arrows and scattered them; he flashed forth lightnings and routed them.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Then the channels of the sea were seen, and the foundations of the world were laid bare at your rebuke, O LORD, at the blast of the breath of your nostrils.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>The psalmist reflected on God, who had protected him from all kinds of dangers, and confessed his love for God, who would continue to protect him. Whenever the psalmist fell into trouble, God became his rock and fortress, shield and stronghold, strength and salvation. When the poet cried out from the brink of death, God heard his pleas and unleashed his wrath on the enemies who harassed his beloved child. God tore open the heavens and came down. He struck the enemy with thunder and lightning, hail and fiery bows, and drove back the waters that threatened the psalmist’s life.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 1-2</div>God is a strength and salvation to those who fall into hardship. The psalmist’s life was not easy, but God was always with him and acted as his fortress and stronghold, a rock and shield to hide behind, and a safe refuge. The psalmist’s confession is a vivid depiction of the protection and salvation of God, whom the psalmist personally encountered throughout his life. When we look back on our past, we will see God’s protection and salvation in our own lives.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 6-15</div>No matter what crisis we face, we must cry out to God. Just as a parent rushes to their child at the sound of their cry, God also hastens to us when we call out to him. Look how swiftly God responded to the psalmist’s cries. That is how quickly God comes to us when he hears our lament.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, you are my helper and saviour in times of affliction. I love you with all my heart.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
