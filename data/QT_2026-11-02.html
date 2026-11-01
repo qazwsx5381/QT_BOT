@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 거룩함과 진실함으로</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 거룩함과 진실함으로</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-11-02<br>
+                <strong>본문 :</strong> 고린도후서(2 Corinthians) 1:12 - 1:22
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리가 세상에서 특별히 너희에 대하여 하나님의 거룩함과 진실함으로 행하되 육체의 지혜로 하지 아니하고 하나님의 은혜로 행함은 우리 양심이 증언하는 바니 이것이 우리의 자랑이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">오직 너희가 읽고 아는 것 외에 우리가 다른 것을 쓰지 아니하노니 너희가 완전히 알기를 내가 바라는 것은</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희가 우리를 부분적으로 알았으나 우리 주 예수의 날에는 너희가 우리의 자랑이 되고 우리가 너희의 자랑이 되는 그것이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 이 확신을 가지고 너희로 두 번 은혜를 얻게 하기 위하여 먼저 너희에게 이르렀다가</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희를 지나 마게도냐로 갔다가 다시 마게도냐에서 너희에게 가서 너희의 도움으로 유대로 가기를 계획하였으니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이렇게 계획할 때에 어찌 경솔히 하였으리요 혹 계획하기를 육체를 따라 계획하여 예 예 하면서 아니라 아니라 하는 일이 내게 있겠느냐</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">하나님은 미쁘시니라 우리가 너희에게 한 말은 예 하고 아니라 함이 없노라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">19절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리 곧 나와 실루아노와 디모데로 말미암아 너희 가운데 전파된 하나님의 아들 예수 그리스도는 예 하고 아니라 함이 되지 아니하셨으니 그에게는 예만 되었느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">20절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">하나님의 약속은 얼마든지 그리스도 안에서 예가 되니 그런즉 그로 말미암아 우리가 아멘 하여 하나님께 영광을 돌리게 되느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">21절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리를 너희와 함께 그리스도 안에서 굳건하게 하시고 우리에게 기름을 부으신 이는 하나님이시니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">22절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그가 또한 우리에게 인치시고 보증으로 우리 마음에 성령을 주셨느니라</div></div></div></div>
+            <hr>
+            <div class="content-area">고린도 교회 방문 계획이 변경된 것을 비난하는 이들에게 바울은 그것이 교회를 향한 거룩함과 진실함에서 나온 결정이었다고 말합니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 12-14절</div>   바울이 편지를 보내어 격정적인 어조로 반대 세력을 벌할 것을 요구하자(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;2:4&quot;, &quot;label&quot;: &quot;고린도후서 2장 4절&quot;}]', '고린도후서 (2:4)', 'kr')">2:4</span>), 일부 교인들이 바울을 겉과 속이 다른 사람이라고 비판한 모양입니다. 2차 선교여행 중 18개월이나 머물며 가장 정성을 쏟아 개척한 교회에게 이런 오해를 받는 바울의 심정이 어떠하겠습니까? 바울은 고린도 교인들을 거룩함(순전함)과 진실함(투명함)으로만 대했다고 설명합니다. 세상의 처세술(육체의 지혜)로 사익을 추구하지 않고 오직 하나님의 은혜로만 그들을 섬겼다고 항변합니다. 고린도전서와 눈물의 편지(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;2:4&quot;, &quot;label&quot;: &quot;고린도후서 2장 4절&quot;}]', '고린도후서 (2:4)', 'kr')">2:4</span>), 그리고 고린도후서도 감춘 의도 없이 오직 그들을 사랑하고 걱정하여 쓴 편지임을 알아 달라고 말합니다. 화해와 회복을 위한 노력이 거절당하고 또 다른 오해를 낳아도, 바울처럼 거룩함과 진실함을 저버리지 맙시다. 하나님이 다 아시고 갚아 주실 것입니다. 부분적으로 알기에 쌓이는 오해들이 마지막 날에는 모두 해명될 것입니다. 우리는 마침내 서로를 자랑하는 사이로 회복될 것입니다.<br><div class="verse-point">📍 15-22절</div>   바울은 마게도냐를 들렀다가 고린도에 방문하겠다고 밝혔지만(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;1cor&quot;, &quot;verse&quot;: &quot;16:5-9&quot;, &quot;label&quot;: &quot;고린도전서 16장 5절 ~ 9절&quot;}]', '고린도후서 (고전 16:5-9)', 'kr')">고전 16:5-9</span>), 고린도 교회의 문제가 심각해지자 곧바로 고린도로 갔습니다. 이 방문에서 일부 교인과 심각한 갈등을 겪었습니다. 바울은 차후에 한 번 더 고린도 교회를 방문하여 두 번째 은혜를 나누고, 교인들의 후원을 받아 유대 지역으로 갈 것을 계획했지만, 갈등으로 인해 모든 일정을 취소했습니다. 그러자 ‘바울이 계획을 바꾸어 갑작스럽게 방문했다’, ‘한 번 더 들른다더니 약속을 어겼다’라는 비판이 제기된 것입니다. 하지만 바울이 곧바로 고린도로 와서 문제를 살핀 것, 재방문을 취소하고 편지로 해결을 도모한 것 모두 고린도 교인들을 아끼는 마음에서 한 행동이었습니다. ‘예’ 했다가 ‘아니오’ 한 것만 같은 경솔해 보이는 상황을 감수하고서라도, 그들이 하나님의 약속을 오직 ‘예’로서 성취하신 예수님을 따라 살도록 하기 위한 조치였습니다. 바울이 전하는 복음이 신실했듯이, 복음을 어떻게든 전하려고 계획을 변경했던 바울의 의도 역시 신실했습니다. 바울처럼, 내가 전하는 하나님과 예수 그리스도께서 신실하시니 나도 신실할 수밖에 없다고 자신 있게 말할 수 있도록 삽시다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>오직 거룩함과 진실함으로 대화하고 신뢰하는 공동체가 되게 하여 주소서.<br><div class="pray-item"><b>🔹 열방</b></div>세계보건기구(WHO)에 따르면 전 세계에서 7억 명이 넘는 사람들이 트라우마를 유발하는 사건을 경험한다. 선교사들이 이들의 회복과 안정을 위한 전인 치유의 사역을 잘 감당하도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: Faithful God, Sincere Workers</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-11-02<br>
+                <strong>Passage :</strong> 고린도후서(2 Corinthians) 1:12 - 1:22
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For our boast is this, the testimony of our conscience, that we behaved in the world with simplicity and godly sincerity, not by earthly wisdom but by the grace of God, and supremely so toward you.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For we are not writing to you anything other than what you read and acknowledge and I hope you will fully acknowledge--</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">just as you did partially acknowledge us--that on the day of our Lord Jesus you will boast of us as we will boast of you.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Because I was sure of this, I wanted to come to you first, so that you might have a second experience of grace.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">I wanted to visit you on my way to Macedonia, and to come back to you from Macedonia and have you send me on my way to Judea.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Was I vacillating when I wanted to do this? Do I make my plans according to the flesh, ready to say "Yes, yes" and "No, no" at the same time?</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">As surely as God is faithful, our word to you has not been Yes and No.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.19</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For the Son of God, Jesus Christ, whom we proclaimed among you, Silvanus and Timothy and I, was not Yes and No, but in him it is always Yes.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.20</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For all the promises of God find their Yes in him. That is why it is through him that we utter our Amen to God for his glory.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.21</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And it is God who establishes us with you in Christ, and has anointed us,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.22</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and who has also put his seal on us and given us his Spirit in our hearts as a guarantee.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Paul, who had written his first letter from Ephesus, had planned to travel through Macedonia to Corinth before moving on to Jerusalem (<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;1:1&quot;, &quot;label&quot;: &quot;2 Corinthians 1:1&quot;}]', '2 Corinthians (1 Cor. 16:5-9)', 'bi')">1 Cor. 16:5-9</span>). However, upon hearing news of trouble and unrest in the Corinthian church, Paul hurriedly went directly to Corinth first and planned to visit them again on his way back. But when he did not return (<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;1:23&quot;, &quot;label&quot;: &quot;2 Corinthians 1:23&quot;}, {&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;2:1&quot;, &quot;label&quot;: &quot;2 Corinthians 2:1&quot;}]', '2 Corinthians (1:23, 2:1)', 'bi')">1:23, 2:1</span>), some criticised him for being insincere and unreliable. Paul responded by reminding them that he had conducted himself with integrity and ministered by God’s grace. Confident that the misunderstanding would be solved by his explanation, Paul rhetorically asked how a servant of God could say something they did not mean.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 VV. 18-22</div>God makes all promises “Yes”. He fulfilled the promises of the Old Testament through his son and gave us the Holy Spirit as a guarantee so that we could participate in his faithful works. Even today, he fulfils his promises of “Yes” to his obedient children. Paul confessed that he had to be faithful because he preached of the faithful God. Am I acting on my “yes” promises in my life while making the necessary sacrifices?<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 15-17</div>Hasty judgements lead to misunderstandings. Paul had good reasons to change his travel plans, but the Corinthian believers just assumed he was fickle without inquiring into his reasons. The same may be true for us today. When someone acts in a way we cannot understand, we should first ask them why before jumping to the wrong conclusion.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help us to be faithful, truthful, and sincere in your image.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"2cor_2": {}, "1cor_16": {}}, "bi": {"2cor_1": {}, "2cor_2": {}}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
