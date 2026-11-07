@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 모든 것을 가진 자로다</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 모든 것을 가진 자로다</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-11-08<br>
+                <strong>본문 :</strong> 고린도후서(2 Corinthians) 6:1 - 7:1
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리가 하나님과 함께 일하는 자로서 너희를 권하노니 하나님의 은혜를 헛되이 받지 말라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이르시되 내가 은혜 베풀 때에 너에게 듣고 구원의 날에 너를 도왔다 하셨으니 보라 지금은 은혜 받을 만한 때요 보라 지금은 구원의 날이로다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리가 이 직분이 비방을 받지 않게 하려고 무엇에든지 아무에게도 거리끼지 않게 하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">오직 모든 일에 하나님의 일꾼으로 자천하여 많이 견디는 것과 환난과 궁핍과 고난과</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">매 맞음과 갇힘과 난동과 수고로움과 자지 못함과 먹지 못함 가운데서도</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">깨끗함과 지식과 오래 참음과 자비함과 성령의 감화와 거짓이 없는 사랑과</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">진리의 말씀과 하나님의 능력으로 의의 무기를 좌우에 가지고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">영광과 욕됨으로 그러했으며 악한 이름과 아름다운 이름으로 그러했느니라 우리는 속이는 자 같으나 참되고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">무명한 자 같으나 유명한 자요 죽은 자 같으나 보라 우리가 살아 있고 징계를 받는 자 같으나 죽임을 당하지 아니하고</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">근심하는 자 같으나 항상 기뻐하고 가난한 자 같으나 많은 사람을 부요하게 하고 아무 것도 없는 자 같으나 모든 것을 가진 자로다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">고린도인들이여 너희를 향하여 우리의 입이 열리고 우리의 마음이 넓어졌으니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희가 우리 안에서 좁아진 것이 아니라 오직 너희 심정에서 좁아진 것이니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 자녀에게 말하듯 하노니 보답하는 것으로 너희도 마음을 넓히라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희는 믿지 않는 자와 멍에를 함께 메지 말라 의와 불법이 어찌 함께 하며 빛과 어둠이 어찌 사귀며</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그리스도와 벨리알이 어찌 조화되며 믿는 자와 믿지 않는 자가 어찌 상관하며</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">16절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">하나님의 성전과 우상이 어찌 일치가 되리요 우리는 살아 계신 하나님의 성전이라 이와 같이 하나님께서 이르시되 내가 그들 가운데 거하며 두루 행하여 나는 그들의 하나님이 되고 그들은 나의 백성이 되리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">17절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그러므로 너희는 그들 중에서 나와서 따로 있고 부정한 것을 만지지 말라 내가 너희를 영접하여</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">18절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">너희에게 아버지가 되고 너희는 내게 자녀가 되리라 전능하신 주의 말씀이니라 하셨느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그런즉 사랑하는 자들아 이 약속을 가진 우리는 하나님을 두려워하는 가운데서 거룩함을 온전히 이루어 육과 영의 온갖 더러운 것에서 자신을 깨끗하게 하자</div></div></div></div>
+            <hr>
+            <div class="content-area">바울은 받은 은혜에 합당한 삶을 권면한 후 자신이 이 은혜의 직책, 화목하게 하는 직책을 잘 수행하기 위해 어떤 삶을 살았는지 소개합니다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 1-2절</div>   바울은 이사야가 약속한 ‘은혜의 때’(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;isa&quot;, &quot;verse&quot;: &quot;49:8&quot;, &quot;label&quot;: &quot;이사야 49장 8절&quot;}]', '고린도후서 (사 49:8)', 'kr')">사 49:8</span>)가 ‘지금’ 고린도 교인들에게 임했으니, 현재적 반응이 있어야 한다고 촉구합니다. 복음의 효력이 ‘지금’ 내 삶에 나타나지 않는다면, 하나님의 은혜를 헛되게 하는 것입니다.<br><div class="verse-point">📍 3-7절</div>   거짓 교사들은 바울에게서 지도자의 부정과 흠집을 찾을 수 없으니, 그의 고난 가득한 삶을 비난했습니다. 하지만 바울은 세상의 불의한 처사에 의의 무기로 맞섰습니다. 매 맞고 갇히고 자지 못하고 먹지 못하면서 깨끗함과 자비와 성령의 감화와 거짓 없는 사랑을 지켜 냈습니다. 영달과 명예를 위해 진리의 말씀을 왜곡하지 않고 일함으로써 하나님의 신실한 일꾼임을 입증했습니다. 하나님의 능력이 아니면 감당할 수 없었을 십자가의 길과 그 길을 따라 산 고난의 자취는, 그가 하나님의 진정한 사도임을 입증하는 증거였습니다.<br><div class="verse-point">📍 8-10절</div>   바울은 자신에 대한 평가가 명예와 수치, 비방과 찬사로 엇갈린다는 것을 압니다. 그래서 고린도 교인들에게 세상의 관점이 아닌, 하나님의 관점으로 자신을 바라봐 달라고 부탁합니다. 바울은 세속적인 관점으로 거짓말쟁이 같지만, 하나님의 관점으로는 가장 진실한 사람입니다. 무명한 사람 같지만 하나님이 인정하는 사람이고, 저주받은 사람 같지만 하나님이 매번 살려 주시는 사람입니다. 걱정만 가득한 사람 같지만 항상 기뻐하는 사람이고, 가난한 사람 같지만 모든 것을 가진 사람입니다. 나는 세상의 인정과 하나님의 인정 중 무엇을 의식하며 삽니까?<br>11절 - 7장 1절   고린도 교회는 거짓 교사들에게 현혹되어 바울을 오해하고 있지만, 바울은 여전히 그들을 향해 마음이 활짝 열려 있습니다. 바울은 교회를 분열시키는 일이 곧 ‘하나님의 성전’을 더럽히는 일이라고 했습니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;1cor&quot;, &quot;verse&quot;: &quot;3:3-17&quot;, &quot;label&quot;: &quot;고린도전서 3장 3절 ~ 17절&quot;}]', '고린도후서 (고전 3:3-17)', 'kr')">고전 3:3-17</span>). 세상의 차별적, 경쟁적 가치를 내세워 바울을 깎아내리는 거짓 교사들과 한통속이 되는 것은 성전을 더럽히는 우상숭배와 다름없습니다. 그러므로 고린도 교회가 바울과 화해하는 길은 육과 영의 온갖 더러운 것을 버리고 성전으로서의 거룩함을 회복하는 것입니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>어떤 상황과 처지에서도 복음이 비방받지 않도록 복음에 합당한 삶을 살게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>브라질에서는 기독교 심리학자들이 공개적으로 신앙을 표현하는 일에 제한받고 있다. 전문 영역에 종사하는 그리스도인들이 직업윤리를 지키면서 지혜롭게 믿음을 드러내도</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: So That His Grace Is Not in Vain</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-11-08<br>
+                <strong>Passage :</strong> 고린도후서(2 Corinthians) 6:1 - 7:1
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Working together with him, then, we appeal to you not to receive the grace of God in vain.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For he says, "In a favorable time I listened to you, and in a day of salvation I have helped you." Behold, now is the favorable time; behold, now is the day of salvation.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">We put no obstacle in anyone's way, so that no fault may be found with our ministry,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">but as servants of God we commend ourselves in every way: by great endurance, in afflictions, hardships, calamities,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">beatings, imprisonments, riots, labors, sleepless nights, hunger;</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">by purity, knowledge, patience, kindness, the Holy Spirit, genuine love;</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">by truthful speech, and the power of God; with the weapons of righteousness for the right hand and for the left;</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">through honor and dishonor, through slander and praise. We are treated as impostors, and yet are true;</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">as unknown, and yet well known; as dying, and behold, we live; as punished, and yet not killed;</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">as sorrowful, yet always rejoicing; as poor, yet making many rich; as having nothing, yet possessing everything.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">We have spoken freely to you, Corinthians; our heart is wide open.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">You are not restricted by us, but you are restricted in your own affections.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">In return (I speak as to children) widen your hearts also.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Do not be unequally yoked with unbelievers. For what partnership has righteousness with lawlessness? Or what fellowship has light with darkness?</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">What accord has Christ with Belial? Or what portion does a believer share with an unbeliever?</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.16</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">What agreement has the temple of God with idols? For we are the temple of the living God; as God said, "I will make my dwelling among them and walk among them, and I will be their God, and they shall be my people.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.17</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Therefore go out from their midst, and be separate from them, says the Lord, and touch no unclean thing; then I will welcome you,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.18</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and I will be a father to you, and you shall be sons and daughters to me, says the Lord Almighty."</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Since we have these promises, beloved, let us cleanse ourselves from every defilement of body and spirit, bringing holiness to completion in the fear of God.</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>Paul urged the believers not to side with those who undermined the gospel but to accept the gospel of grace. Even amid hardship, he conducted himself as a true servant of God, and regardless of how others regarded him, he carried out his ministry through the word of truth, the power of God, and the weapons of righteousness. Though he appeared to have nothing, he knew he possessed everything in Christ. Paul urged the believers to open their hearts and be reconciled. He also emphasised that they were God’s temple and that if they wished to be reconciled to God, they had to turn away from unholy practices such as participating in pagan temple worship and restore their holiness.<br><h2 class="q-title">📝 What lesson is God teaching me?</h2>6:11-13 Reconciliation requires effort. Paul did not shut out of his heart the believers who doubted him and tried to turn away. Instead, he tried to win back their hearts by speaking about himself with remarkable openness and painstaking honesty. There was only one reason: he loved them. Is there someone from whom we have grown distant? We cannot preserve love without making an effort.<br>6:14-7:1 True Christians strive to help other believers restore their relationship with God. Paul urged the believers of Corinth to restore their holiness so that they could be reconciled to God. Is there anyone in our lives who needs our help to preserve their holiness and maintain a personal relationship with God?<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help us to willingly and wisely make the necessary effort for reconciliation.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"isa_49": {}, "1cor_3": {}}, "bi": {}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
