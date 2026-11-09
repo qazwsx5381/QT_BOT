@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 QT: 적게 거둔 자도 모자라지 않게</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; line-height: 1.7; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; background-color: #ffffff; color: #1f2328; font-size: 16px; }
+        
+        .top-bar { position: -webkit-sticky; position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 0; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .tab-group { display: flex; background: #e9ecef; border-radius: 8px; padding: 3px; gap: 2px; }
+        .tab-btn { border: none; background: transparent; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #495057; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .tab-btn.active { background: #ffffff !important; color: #0969da !important; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+        
+        .font-control { display: flex; gap: 4px; }
+        .font-control button { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #24292f; }
+        
+        h1 { font-size: 1.65rem; line-height: 1.35; letter-spacing: -0.5px; margin: 0 0 16px 0; word-break: keep-all; }
+        .title-divider { height: 2px; background-color: #eaecef; margin-bottom: 20px; border-radius: 1px; }
+        blockquote { background: #f6f8fa; border-left: 4px solid #0969da; margin: 0 0 24px 0; padding: 14px 18px; color: #57606a; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+        .section-header { font-size: 1.25rem; font-weight: 700; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+        .bible-link { color: #0969da; font-weight: 600; text-decoration: underline; cursor: pointer; }
+        
+        /* 통합 모달 스타일 */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: #ffffff; margin: 10% auto; width: 92%; max-width: 520px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .modal-header { padding: 14px 18px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding: 16px 20px; font-size: 15px; line-height: 1.75; }
+        .close-btn { font-size: 24px; font-weight: bold; color: #57606a; cursor: pointer; line-height: 1; }
+        
+        .modal-section-title { font-size: 0.95rem; font-weight: 700; color: #0969da; margin: 14px 0 8px 0; border-bottom: 1px dashed #d0d7de; padding-bottom: 4px; }
+        .modal-verse-row { display: flex; margin-bottom: 10px; }
+        .modal-v-badge { min-width: 48px; font-weight: 700; color: #0969da; }
+        .modal-v-text { flex: 1; }
+
+        .q-title { font-size: 1.35rem; color: #d11010; margin: 28px 0 14px 0; border-left: 4px solid #d11010; padding-left: 10px; }
+        .q-title-sub { font-size: 1.3rem; color: #0969da; margin: 28px 0 14px 0; border-left: 4px solid #0969da; padding-left: 10px; }
+        .verse-point { font-weight: 700; color: #cf222e; margin: 22px 0 6px 0; font-size: 1.1rem; }
+        .pray-item { margin-top: 16px; font-size: 1.05rem; color: #0969da; }
+        .content-area { word-break: keep-all; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #d0d7de; margin: 28px 0; }
+
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #0d1117; color: #c9d1d9; }
+            .top-bar { background-color: rgba(13, 17, 23, 0.95); border-bottom-color: #30363d; }
+            .tab-group { background: #21262d; }
+            .tab-btn { color: #8b949e; }
+            .tab-btn.active { background: #30363d !important; color: #58a6ff !important; }
+            .font-control button { background: #21262d; border-color: #30363d; color: #c9d1d9; }
+            .title-divider { background-color: #30363d; }
+            blockquote { background: #161b22; border-left-color: #58a6ff; color: #8b949e; }
+            .modal-content { background-color: #161b22; color: #c9d1d9; }
+            .modal-header { background: #161b22; border-bottom-color: #30363d; }
+            .close-btn { color: #8b949e; }
+            .bible-link { color: #58a6ff; }
+            .modal-section-title { color: #58a6ff; border-bottom-color: #30363d; }
+            .modal-v-badge { color: #58a6ff; }
+            .q-title { color: #ff7b72; border-left-color: #ff7b72; }
+            .q-title-sub { color: #58a6ff; border-left-color: #58a6ff; }
+            .verse-point { color: #ffa657; }
+            .pray-item { color: #58a6ff; }
+            hr { border-top-color: #30363d; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="tab-group">
+            <button id="btn-kr" class="tab-btn active" onclick="switchTab('kr')">📖 매일성경</button>
+            <button id="btn-bi" class="tab-btn" onclick="switchTab('bi')">🌐 English</button>
+        </div>
+        <div class="font-control">
+            <button type="button" onclick="changeFontSize(-1)">A-</button>
+            <button type="button" onclick="changeFontSize(0)">기본</button>
+            <button type="button" onclick="changeFontSize(1)">A+</button>
+        </div>
+    </header>
+
+    <div>
+        <!-- 1. 한글 매일성경 패널 -->
+        <section id="panel-kr" style="display: block;">
+            <h1>📖 오늘의 QT: 적게 거둔 자도 모자라지 않게</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>날짜 :</strong> 2026-11-10<br>
+                <strong>본문 :</strong> 고린도후서(2 Corinthians) 8:1 - 8:15
+            </blockquote>
+            <div class="section-header">📜 성경 본문 (개역개정)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">1절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">형제들아 하나님께서 마게도냐 교회들에게 주신 은혜를 우리가 너희에게 알리노니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">2절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">환난의 많은 시련 가운데서 그들의 넘치는 기쁨과 극심한 가난이 그들의 풍성한 연보를 넘치도록 하게 하였느니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">3절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 증언하노니 그들이 힘대로 할 뿐 아니라 힘에 지나도록 자원하여</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">4절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이 은혜와 성도 섬기는 일에 참여함에 대하여 우리에게 간절히 구하니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">5절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리가 바라던 것뿐 아니라 그들이 먼저 자신을 주께 드리고 또 하나님의 뜻을 따라 우리에게 주었도다</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">6절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">그러므로 우리가 디도를 권하여 그가 이미 너희 가운데서 시작하였은즉 이 은혜를 그대로 성취하게 하라 하였노라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">7절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">오직 너희는 믿음과 말과 지식과 모든 간절함과 우리를 사랑하는 이 모든 일에 풍성한 것 같이 이 은혜에도 풍성하게 할지니라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">8절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">내가 명령으로 하는 말이 아니요 오직 다른 이들의 간절함을 가지고 너희의 사랑의 진실함을 증명하고자 함이로라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">9절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">우리 주 예수 그리스도의 은혜를 너희가 알거니와 부요하신 이로서 너희를 위하여 가난하게 되심은 그의 가난함으로 말미암아 너희를 부요하게 하려 하심이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">10절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이 일에 관하여 나의 뜻을 알리노니 이 일은 너희에게 유익함이라 너희가 일 년 전에 행하기를 먼저 시작할 뿐 아니라 원하기도 하였은즉</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">11절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이제는 하던 일을 성취할지니 마음에 원하던 것과 같이 완성하되 있는 대로 하라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">12절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">할 마음만 있으면 있는 대로 받으실 터이요 없는 것은 받지 아니하시리라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">13절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이는 다른 사람들은 평안하게 하고 너희는 곤고하게 하려는 것이 아니요 균등하게 하려 함이니</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">14절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">이제 너희의 넉넉한 것으로 그들의 부족한 것을 보충함은 후에 그들의 넉넉한 것으로 너희의 부족한 것을 보충하여 균등하게 하려 함이라</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">15절</b><div class="verse-texts" style="flex:1;"><div class="verse-kor" style="margin-bottom:4px;">기록된 것 같이 많이 거둔 자도 남지 아니하였고 적게 거둔 자도 모자라지 아니하였느니라</div></div></div></div>
+            <hr>
+            <div class="content-area">8-9장에서는 예루살렘 교회를 위한 연보를 작정한 대로 이행하도록 독려합니다. 마게도냐 교회의 모범 사례를 소개하고, 무엇보다 그리스도의 은혜를 기억하라고 말합니다.<br><h2 class="q-title">✨ 하나님은 어떤 분입니까?</h2><div class="verse-point">📍 1-5절</div>   척박한 환경에서도 기쁨으로 헌신하도록 은혜를 주십니다. 마게도냐 교회는 극심한 환난과 가난이라는 어려운 형편에 처해 있었습니다. 하지만 하나님이 은혜를 베푸시자, 그들은 열악한 상황에서 넘치게 기뻐했고 풍성한 연보를 드렸습니다. 삶의 여유가 있고 굳게 결심해 보아도 하나님의 은혜가 없으면 헌신하기 어렵습니다. 삶이 고단하고 넉넉하지 않더라도 은혜가 임하면 자기 것을 나눌 수 있습니다. 어려운 처지에 놓인 이웃을 돕기 위해 기꺼이 나누는 사랑이 은혜의 증거입니다.<br><div class="verse-point">📍 6-9절</div>   낮아지신 그리스도의 본을 따르게 하십니다. 그리스도께서는 하늘의 모든 영광과 권세를 가지셨음에도 이 땅에 가장 가난하고 낮아진 모습으로 오셔서 우리를 부요하게 만들어 주셨습니다(<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;phi&quot;, &quot;verse&quot;: &quot;2:5-8&quot;, &quot;label&quot;: &quot;빌립보서 2장 5절 ~ 8절&quot;}]', '고린도후서 (빌 2:5-8)', 'kr')">빌 2:5-8</span>). 자기 자신이 그리스도의 은혜와 사랑에 크게 빚진 자임을 깊이 깨달은 사람은 그리스도를 본받아 자기 비움의 사랑까지 이를 수 있습니다.<br><div class="verse-point">📍 13-15절</div>   자기 백성이 서로 부족함을 채움으로 균등과 안정을 이루기를 원하십니다. 어떤 이에게만 짐을 무겁게 지우고 어떤 이는 편안하게 하려는 것이 아니라, 이것이 모든 이가 안온하게 살 수 있는 길이기 때문입니다. 출애굽 시절 광야에서 만나를 거둘 때 “많이 거둔 자도 남지 아니하였고 적게 거둔 자도 모자라지 아니하였다”는 말씀처럼, 하나님은 재물의 독점이나 이기적 축적을 기뻐하지 않으십니다. 물질과 은혜의 선순환을 통해 공동체 안에 결핍이 없는 은혜의 균등을 이루도록 가르치십니다. 지금 내가 누리는 넉넉함이 누군가의 부족함을 채우기 위한 하나님의 계획임을 기억합시다.<br><h2 class="q-title">📝 내게 주시는 교훈은 무엇입니까?</h2><div class="verse-point">📍 10-12절</div>   고린도 교회는 예루살렘 교회를 돕는 일에 뜻을 모았으나, 여러 혼란을 겪으며 실행을 미루고 있었습니다. 이에 바울은 그들이 시작한 선한 일을 처음에 품은 그 마음으로 성실히 마무리하라고 촉구합니다. 선한 결단을 내리고도 주저하거나 중단한 일은 없는지 살펴보고, 더는 미루지 말고 완수합시다. 거창한 일이 아니더라도 자기 형편에 맞게 실천하는 선행을 하나님은 기쁘게 받으십니다.<br><hr><h2 class="q-title">🙏 오늘의 기도</h2><div class="pray-item"><b>🔹 공동체</b></div>우리를 부요하게 하신 그리스도의 가난해지심을 기억하며, 그 사랑을 본받게 하소서.<br><div class="pray-item"><b>🔹 열방</b></div>중국 당국이 가정교회를 급습해 교회 지도자와 성도를 체포하는 일이 늘고 있다. 중국 교회가 신실하게 신앙을 지켜 나가고, 옥에 갇힌 지도자들이 하루속히 석방되도록</div>
+        </section>
+
+        <!-- 2. 영문 매일성경 패널 -->
+        <section id="panel-bi" style="display: none;">
+            <h1>📖 Today's QT: So That You Might Become Rich</h1>
+            <div class="title-divider"></div>
+            <blockquote>
+                <strong>Date :</strong> 2026-11-10<br>
+                <strong>Passage :</strong> 고린도후서(2 Corinthians) 8:1 - 8:15
+            </blockquote>
+            <div class="section-header">📜 Scripture (NIV)</div>
+            <div class="bible-section"><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.1</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">We want you to know, brothers, about the grace of God that has been given among the churches of Macedonia,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.2</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">for in a severe test of affliction, their abundance of joy and their extreme poverty have overflowed in a wealth of generosity on their part.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.3</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For they gave according to their means, as I can testify, and beyond their means, of their own accord,</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.4</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">begging us earnestly for the favor of taking part in the relief of the saints--</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.5</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">and this, not as we expected, but they gave themselves first to the Lord and then by the will of God to us.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.6</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">Accordingly, we urged Titus that as he had started, so he should complete among you this act of grace.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.7</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">But as you excel in everything--in faith, in speech, in knowledge, in all earnestness, and in our love for you--see that you excel in this act of grace also.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.8</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">I say this not as a command, but to prove by the earnestness of others that your love also is genuine.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.9</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For you know the grace of our Lord Jesus Christ, that though he was rich, yet for your sake he became poor, so that you by his poverty might become rich.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.10</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">And in this matter I give my judgment: this benefits you, who a year ago started not only to do this work but also to desire to do it.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.11</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">So now finish doing it as well, so that your readiness in desiring it may be matched by your completing it out of what you have.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.12</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For if the readiness is there, it is acceptable according to what a person has, not according to what he does not have.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.13</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">For I do not mean that others should be eased and you burdened, but that as a matter of fairness</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.14</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">your abundance at the present time should supply their need, so that their abundance may supply your need, that there may be fairness.</div></div></div><div class="verse-row" style="display:flex; margin-bottom:16px;"><b class="verse-badge" style="min-width:55px; color:#0969da; font-weight:700;">V.15</b><div class="verse-texts" style="flex:1;"><div class="verse-eng-text" style="color:#57606a; font-family:Georgia,serif; line-height:1.5; margin-bottom:4px;">As it is written, "Whoever gathered much had nothing left over, and whoever gathered little had no lack."</div></div></div></div>
+            <hr>
+            <div class="content-area"><h2 class="q-title-sub">💡 Thinking & Understanding</h2>When the relief offering the Corinthian church had begun (<span class="bible-link" onclick="openCombinedModal('[{&quot;book&quot;: &quot;2cor&quot;, &quot;verse&quot;: &quot;8:1&quot;, &quot;label&quot;: &quot;2 Corinthians 8:1&quot;}]', '2 Corinthians (1 Cor. 16:1-4)', 'bi')">1 Cor. 16:1-4</span>) for the impoverished believers in Judea (Acts 11:27-30) was interrupted by turmoil in the church, Paul urged them to see it through. He pointed to the example of the Macedonian churches, who considered it a privilege to give generously despite their own hardships, and encouraged the believers to excel in this as they did in every other aspect. Paul reminded them that giving offerings was an expression of their discipleship to Christ and a commitment they had undertaken willingly. A gift offered according to one’s means was pleasing to God, and as believers shared with one another so that they could be equal, they could embody the kingdom of God that Israel had experienced through the provision of manna.<br><h2 class="q-title">✨ Who is God?</h2><div class="verse-point">📍 V. 9</div>God lowered himself to raise us up and became poor to make us rich. When we reflect on the love he demonstrated on the cross by giving everything for us, we cannot help but gladly participate in giving to those in need. To cling tightly to our possessions while ignoring our neighbour’s need is to fail to grasp the love of Christ and the true riches we have gained in Him (see Prov. 11:24-25).<br><h2 class="q-title">📝 What lesson is God teaching me?</h2><div class="verse-point">📍 VV. 10-12</div>We shouldn’t use our circumstances as an excuse to delay giving to those in need. Generosity is a matter of the heart, not the size of one’s wealth. The Lord delighted not in the large offerings of the rich but in the widow’s two small copper coins (Mark 12:42; Luke 21:2). When the heart is willing, whether we have much or little, we can all give to those in need.<br><hr><h2 class="q-title">🙏 Prayer</h2>Lord, help us to follow Jesus’ example by giving generously so that we may experience your kingdom as we live in equality.</div>
+        </section>
+    </div>
+
+    <!-- 통합 성경 모달 -->
+    <div id="bibleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="margin:0; font-size:1.05rem; font-weight:700;">말씀 참조</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalTextBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 50px; font-size: 0.8rem; color: #8b949e; text-align: center; padding-bottom: 20px;">
+        본 내용은 매일성경 크롤링을 통해 제공됩니다.
+    </footer>
+
+    <script>
+        let currentTab = 'kr';
+        const BIBLE_CACHE = {"kr": {"phi_2": {}}, "bi": {"2cor_8": {}}};
+
+        function switchTab(type) {
+            currentTab = type;
+            const btnKr = document.getElementById('btn-kr');
+            const btnBi = document.getElementById('btn-bi');
+            const panelKr = document.getElementById('panel-kr');
+            const panelBi = document.getElementById('panel-bi');
+
+            if (type === 'kr') {
+                btnKr.classList.add('active');
+                btnBi.classList.remove('active');
+                panelKr.style.display = 'block';
+                panelBi.style.display = 'none';
+            } else {
+                btnBi.classList.add('active');
+                btnKr.classList.remove('active');
+                panelKr.style.display = 'none';
+                panelBi.style.display = 'block';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        let currentSize = 16;
+        function changeFontSize(dir) {
+            if (dir === 0) {
+                currentSize = 16;
+            } else {
+                currentSize += dir * 1;
+            }
+            if (currentSize < 13) currentSize = 13;
+            if (currentSize > 24) currentSize = 24;
+
+            const elms = document.querySelectorAll('body, .verse-kor, .verse-eng-text, .content-area, p, blockquote, .modal-body');
+            elms.forEach(function(el) {
+                el.style.fontSize = currentSize + 'px';
+            });
+        }
+
+        // --- 통합 모달 렌더링 ---
+        function openCombinedModal(itemsJson, headerTitle, lang) {
+            let items = [];
+            try {
+                items = JSON.parse(itemsJson);
+            } catch (e) {
+                return;
+            }
+
+            const titleElem = document.getElementById('modalTitle');
+            const bodyElem = document.getElementById('modalTextBody');
+            
+            titleElem.innerText = headerTitle + (lang === 'kr' ? ' (개역개정)' : ' (NIV)');
+            bodyElem.innerHTML = '';
+
+            const cacheMap = (lang === 'kr') ? BIBLE_CACHE.kr : BIBLE_CACHE.bi;
+            let fullHtml = '';
+
+            items.forEach((item, idx) => {
+                let c = item.verse;
+                let startV = null;
+                let endV = null;
+                let isRange = false; // 여러 절이 이어지는 범위인지 체크
+
+                if (item.verse.includes(':')) {
+                    const parts = item.verse.split(':');
+                    c = parts[0];
+                    const vParts = parts[1].split('-');
+                    startV = parseInt(vParts[0]);
+                    if (vParts.length > 1) {
+                        endV = parseInt(vParts[1]);
+                        if (endV > startV) isRange = true; // 16-18절 등
+                    } else {
+                        endV = startV;
+                    }
+                } else if (item.verse.includes('-')) {
+                    c = item.verse.split('-')[0];
+                    isRange = true;
+                }
+
+                const cacheKey = item.book + '_' + parseInt(c);
+                const chapterData = cacheMap ? cacheMap[cacheKey] : null;
+
+                fullHtml += '<div class="modal-section-title">📍 ' + item.label + '</div>';
+
+                if (chapterData && Object.keys(chapterData).length > 0) {
+                    const sortedKeys = Object.keys(chapterData).map(Number).sort((a,b) => a - b);
+                    let found = false;
+                    for (let v of sortedKeys) {
+                        if (startV !== null && (v < startV || v > endV)) continue;
+                        
+                        fullHtml += '<div class="modal-verse-row">';
+                        // 이어지는 여러 절(범위)일 때만 앞에 절 배지를 노출하고, 단일 절인 경우엔 숨김
+                        if (isRange) {
+                            fullHtml += '<b class="modal-v-badge">' + (lang === 'kr' ? v + '절' : 'V.' + v) + '</b>';
+                        }
+                        fullHtml += '<div class="modal-v-text">' + chapterData[v] + '</div>';
+                        fullHtml += '</div>';
+                        found = true;
+                    }
+                    if (!found) {
+                        fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">해당 구절 텍스트를 찾을 수 없습니다.</p>';
+                    }
+                } else {
+                    fullHtml += '<p style="color:#8b949e; font-size:13px; margin:6px 0 12px 0;">본문을 불러오지 못했습니다.</p>';
+                }
+            });
+
+            bodyElem.innerHTML = fullHtml;
+            document.getElementById('bibleModal').style.display = 'block';
+            bodyElem.scrollTop = 0;
+        }
+
+        function closeModal() {
+            document.getElementById('bibleModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('bibleModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
